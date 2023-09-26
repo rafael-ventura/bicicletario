@@ -1,68 +1,37 @@
-
-/*interface AuthRequest extends Request {
-  body: { auth: IAuth };
-}*/
-
 /**
  * @swagger
- * tags:
- *   name: Autenticacao
- *   description: Gerenciamento de autenticação.
- */
-
-/**
- * @swagger
- * /autenticacao:
+ * /login:
  *   post:
- *     summary: Autentica um usuário
+ *     summary: Realiza o login do usuário
  *     tags: [Autenticacao]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Autenticacao'
- *           example:
- *             usuarioId: "1"
- *             senha: "senha123"
+ *             $ref: '#/components/schemas/LoginRequest'
  *     responses:
- *       200:
- *         description: Autenticação bem-sucedida
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Autenticacao'
- *       400:
- *         description: Dados de entrada inválidos
- *         content:
- *           application/json:
- *             example:
- *               error: "Informações de autenticação estão incompletas ou inválidas"
- *       401:
- *         description: Autenticação falhou
- *         content:
- *           application/json:
- *             example:
- *               error: "Usuário ou senha incorretos"
- *       500:
- *         description: Erro interno do servidor
- *         content:
- *           application/json:
- *             example:
- *               error: "Não foi possível autenticar o usuário"
+ *       '200':
+ *         description: Login realizado com sucesso
+ *       '401':
+ *         description: Credenciais inválidas
  */
-/*async function authenticate(req: AuthRequest, res: Response) {
-  const { auth } = req.body;
-  try {
-    const authenticatedUser = await AuthService.authenticate(auth);
-    return res.status(HttpStatusCodes.OK).json(authenticatedUser);
-  } catch (error) {
-    return res.status(HttpStatusCodes.UNAUTHORIZED).json({ error: "Usuário ou senha incorretos" });
-  }
-}*/
 
-/*
-export default {
-  authenticate,
-} as const;
-*/
+/**
+ * @swagger
+ * /recuperacao-senha:
+ *   post:
+ *     summary: Solicita a recuperação de senha
+ *     tags: [Autenticacao]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RecuperacaoSenhaRequest'
+ *     responses:
+ *       '200':
+ *         description: Email de recuperação de senha enviado
+ *       '404':
+ *         description: Usuário não encontrado
+ */

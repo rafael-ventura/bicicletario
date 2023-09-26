@@ -7,23 +7,18 @@
  *       properties:
  *         id:
  *           type: string
- *         marca:
+ *         status:
  *           type: string
- *         modelo:
- *           type: string
- *         anoAquisicao:
- *           type: string
- *         estado:
- *           type: string
- *         localizacaoAtual:
- *           type: string
+ *         localizacao:
+ *           $ref: '#/components/schemas/Localizacao'
  */
 
 /**
  * @swagger
- * /tranca:
+ * /trancas:
  *   post:
  *     summary: Adiciona uma nova tranca
+ *     tags: [Tranca]
  *     requestBody:
  *       required: true
  *       content:
@@ -31,14 +26,15 @@
  *           schema:
  *             $ref: '#/components/schemas/Tranca'
  *     responses:
- *       '201':
+ *       201:
  *         description: Tranca adicionada com sucesso
- *       '400':
+ *       400:
  *         description: Dados de entrada inválidos
  *   get:
  *     summary: Lista todas as trancas
+ *     tags: [Tranca]
  *     responses:
- *       '200':
+ *       200:
  *         description: Lista de trancas
  *         content:
  *           application/json:
@@ -46,17 +42,23 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Tranca'
- *       '401':
- *         description: Não autorizado
- * /tranca/{id}:
+ *       404:
+ *         description: Nenhuma tranca encontrada
+ */
+
+/**
+ * @swagger
+ * /trancas/{id}:
  *   put:
- *     summary: Atualiza os dados de uma tranca
+ *     summary: Atualiza o status de uma tranca
+ *     tags: [Tranca]
  *     parameters:
- *       - name: id
- *         in: path
- *         required: true
+ *       - in: path
+ *         name: id
  *         schema:
  *           type: string
+ *         required: true
+ *         description: ID da tranca.
  *     requestBody:
  *       required: true
  *       content:
@@ -64,23 +66,23 @@
  *           schema:
  *             $ref: '#/components/schemas/Tranca'
  *     responses:
- *       '200':
+ *       200:
  *         description: Tranca atualizada com sucesso
- *       '400':
- *         description: Dados de entrada inválidos
- *       '404':
+ *       404:
  *         description: Tranca não encontrada
  *   delete:
- *     summary: Remove uma tranca
+ *     summary: Remove uma tranca da rede
+ *     tags: [Tranca]
  *     parameters:
- *       - name: id
- *         in: path
- *         required: true
+ *       - in: path
+ *         name: id
  *         schema:
  *           type: string
+ *         required: true
+ *         description: ID da tranca.
  *     responses:
- *       '204':
+ *       204:
  *         description: Tranca removida com sucesso
- *       '404':
+ *       404:
  *         description: Tranca não encontrada
  */

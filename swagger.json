@@ -1,0 +1,1805 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Bicicletario API",
+    "version": "1.0.0",
+    "description": "Documentação da API do Sistema de Bicicletário"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Servidor Local"
+    }
+  ],
+  "paths": {
+    "/alugueis": {
+      "get": {
+        "summary": "Visualizar todos os aluguéis.",
+        "tags": [
+          "Alugueis"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de aluguéis."
+          }
+        }
+      }
+    },
+    "/alugueis/{idUsuario}": {
+      "get": {
+        "summary": "Visualizar aluguéis de um usuário específico.",
+        "tags": [
+          "Alugueis"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "idUsuario",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID do usuário."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de aluguéis do usuário."
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Realiza o login do usuário",
+        "tags": [
+          "Autenticacao"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso"
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          }
+        }
+      }
+    },
+    "/recuperacao-senha": {
+      "post": {
+        "summary": "Solicita a recuperação de senha",
+        "tags": [
+          "Autenticacao"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecuperacaoSenhaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email de recuperação de senha enviado"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        }
+      }
+    },
+    "/bicicletas/{id}": {
+      "put": {
+        "summary": "Atualiza o status de uma bicicleta",
+        "tags": [
+          "Bicicleta"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID da bicicleta."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bicicleta"
+              },
+              "example": {
+                "status": "Manutenção"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bicicleta atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bicicleta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações da bicicleta estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bicicleta não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bicicleta não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível atualizar a bicicleta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove uma bicicleta da rede",
+        "tags": [
+          "Bicicleta"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID da bicicleta."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Bicicleta removida com sucesso"
+          },
+          "404": {
+            "description": "Bicicleta não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bicicleta não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível remover a bicicleta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cobrancas": {
+      "post": {
+        "summary": "Registra uma nova cobrança",
+        "tags": [
+          "Cobranca"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cobranca"
+              },
+              "example": {
+                "idLocatario": "1",
+                "valor": 100.5,
+                "data": "2023-10-01",
+                "hora": "12:30",
+                "detalhes": "Cobrança de aluguel de bicicleta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cobrança registrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cobranca"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Dados de entrada inválidos"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todas as cobranças",
+        "tags": [
+          "Cobranca"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cobranças",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cobranca"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não autorizado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cobrancas/{id}": {
+      "put": {
+        "summary": "Atualiza os dados de uma cobrança",
+        "tags": [
+          "Cobranca"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cobranca"
+              },
+              "example": {
+                "valor": 150.75
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cobrança atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cobranca"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Dados de entrada inválidos"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cobrança não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Cobrança não encontrada"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove uma cobrança",
+        "tags": [
+          "Cobranca"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID da cobrança"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Cobrança removida com sucesso"
+          },
+          "404": {
+            "description": "Cobrança não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Cobrança não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível remover a cobrança"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/{id}": {
+      "put": {
+        "summary": "Atualiza os dados de um funcionário",
+        "tags": [
+          "Funcionario"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID do funcionário."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Funcionario"
+              },
+              "example": {
+                "nome": "João Silva"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Funcionário atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Funcionario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações do funcionário estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Funcionário não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Funcionário não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível atualizar o funcionário"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove um funcionário",
+        "tags": [
+          "Funcionario"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID do funcionário."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Funcionário removido com sucesso"
+          },
+          "404": {
+            "description": "Funcionário não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Funcionário não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível remover o funcionário"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/localizacoes": {
+      "post": {
+        "summary": "Cria uma nova localização",
+        "tags": [
+          "Localizacao"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Localizacao"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Localização criada com sucesso"
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          }
+        }
+      }
+    },
+    "/localizacoes/{id}": {
+      "get": {
+        "summary": "Obtém detalhes de uma localização específica",
+        "tags": [
+          "Localizacao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes da localização",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Localizacao"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Localização não encontrada"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualiza uma localização específica",
+        "tags": [
+          "Localizacao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Localizacao"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Localização atualizada com sucesso"
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          },
+          "404": {
+            "description": "Localização não encontrada"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove uma localização específica",
+        "tags": [
+          "Localizacao"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Localização removida com sucesso"
+          },
+          "404": {
+            "description": "Localização não encontrada"
+          }
+        }
+      }
+    },
+    "/manutencoes/{id}": {
+      "put": {
+        "summary": "Atualiza o status de uma manutenção",
+        "tags": [
+          "Manutencao"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID da manutenção."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Manutencao"
+              },
+              "example": {
+                "status": "concluida"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Manutenção atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Manutencao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações da manutenção estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Manutenção não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Manutenção não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível atualizar a manutenção"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Conclui uma manutenção",
+        "tags": [
+          "Manutencao"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID da manutenção."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Manutenção concluída com sucesso"
+          },
+          "404": {
+            "description": "Manutenção não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Manutenção não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível concluir a manutenção"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notificacoes/{id}": {
+      "put": {
+        "summary": "Atualiza o status de uma notificação",
+        "tags": [
+          "Notificacao"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID da notificação."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Notificacao"
+              },
+              "example": {
+                "status": "lida"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notificação atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notificacao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações da notificação estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Notificação não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Notificação não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível atualizar a notificação"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove uma notificação",
+        "tags": [
+          "Notificacao"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "ID da notificação."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Notificação removida com sucesso"
+          },
+          "404": {
+            "description": "Notificação não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Notificação não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível remover a notificação"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/totens/{id}": {
+      "put": {
+        "summary": "Atualiza o status de um totem",
+        "tags": [
+          "Totem"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID do totem."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Totem"
+              },
+              "example": {
+                "status": "Inativo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Totem atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Totem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações do totem estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Totem não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Totem não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível atualizar o totem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove um totem da rede",
+        "tags": [
+          "Totem"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID do totem."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Totem removido com sucesso"
+          },
+          "404": {
+            "description": "Totem não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Totem não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível remover o totem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trancas/{id}": {
+      "put": {
+        "summary": "Atualiza o status de uma tranca",
+        "tags": [
+          "Tranca"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID da tranca."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tranca"
+              },
+              "example": {
+                "status": "Inativo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tranca atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tranca"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações da tranca estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tranca não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Tranca não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível atualizar a tranca"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove uma tranca da rede",
+        "tags": [
+          "Tranca"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID da tranca."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tranca removida com sucesso"
+          },
+          "404": {
+            "description": "Tranca não encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Tranca não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível remover a tranca"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usuario": {
+      "get": {
+        "summary": "Lista todos os usuários",
+        "description": "Retorna uma lista de todos os usuários registrados no sistema.",
+        "tags": [
+          "Usuario"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Usuario"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "nome": "João",
+                    "email": "joao@example.com"
+                  },
+                  {
+                    "id": 2,
+                    "nome": "Maria",
+                    "email": "maria@example.com"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Nenhum usuário encontrado.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não existem usuários registrados."
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria um novo usuário",
+        "tags": [
+          "Usuario"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Usuario"
+              },
+              "example": {
+                "nome": "João",
+                "email": "joao@example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações do usuário estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível criar o usuário"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usuario/{id}": {
+      "put": {
+        "summary": "Atualiza os dados de um usuário",
+        "tags": [
+          "Usuario"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID do usuário."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Usuario"
+              },
+              "example": {
+                "nome": "João Alterado"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados de entrada inválidos",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informações do usuário estão incompletas ou inválidas"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Usuário não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Não foi possível atualizar o usuário"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Desativa um usuário",
+        "tags": [
+          "Usuario"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID do usuário."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário removido com sucesso."
+          },
+          "204": {
+            "description": "Usuário desativado com sucesso"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        }
+      }
+    },
+    "/bicicletas": {
+      "post": {
+        "summary": "Adiciona uma nova bicicleta",
+        "tags": [
+          "Bicicleta"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bicicleta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bicicleta adicionada com sucesso"
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todas as bicicletas",
+        "tags": [
+          "Bicicleta"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de bicicletas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Bicicleta"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhuma bicicleta encontrada"
+          }
+        }
+      }
+    },
+    "/funcionarios": {
+      "post": {
+        "summary": "Cadastra um novo funcionário",
+        "tags": [
+          "Funcionario"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Funcionario"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Funcionário cadastrado com sucesso"
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todos os funcionários",
+        "tags": [
+          "Funcionario"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de funcionários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Funcionario"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhum funcionário encontrado"
+          }
+        }
+      }
+    },
+    "/totens": {
+      "post": {
+        "summary": "Adiciona um novo totem",
+        "tags": [
+          "Totem"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Totem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Totem adicionado com sucesso"
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todos os totens",
+        "tags": [
+          "Totem"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de totens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Totem"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhum totem encontrado"
+          }
+        }
+      }
+    },
+    "/trancas": {
+      "post": {
+        "summary": "Adiciona uma nova tranca",
+        "tags": [
+          "Tranca"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tranca"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tranca adicionada com sucesso"
+          },
+          "400": {
+            "description": "Dados de entrada inválidos"
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todas as trancas",
+        "tags": [
+          "Tranca"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de trancas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tranca"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nenhuma tranca encontrada"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Aluguel": {
+        "type": "object",
+        "required": [
+          "id",
+          "usuarioId",
+          "bicicletaId",
+          "dataHoraRetirada",
+          "localizacaoRetirada",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "usuarioId": {
+            "type": "string"
+          },
+          "bicicletaId": {
+            "type": "string"
+          },
+          "dataHoraRetirada": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataHoraDevolucao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "localizacaoRetirada": {
+            "$ref": "#/components/schemas/Localizacao"
+          },
+          "localizacaoDevolucao": {
+            "$ref": "#/components/schemas/Localizacao"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Em Andamento",
+              "Concluído"
+            ]
+          },
+          "valorCobrado": {
+            "type": "number"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "senha"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "senha": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "RecuperacaoSenhaRequest": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "Bicicleta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "localizacao": {
+            "$ref": "#/components/schemas/Localizacao"
+          }
+        }
+      },
+      "Cobranca": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "idLocatario": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "number"
+          },
+          "data": {
+            "type": "string"
+          },
+          "hora": {
+            "type": "string"
+          },
+          "detalhes": {
+            "type": "string"
+          }
+        }
+      },
+      "Funcionario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "cargo": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "Localizacao": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "endereco": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude",
+          "endereco"
+        ],
+        "example": {
+          "latitude": -23.5565804,
+          "longitude": -46.662113,
+          "endereco": "Rua da Consolação, 123 - São Paulo, SP"
+        }
+      },
+      "Manutencao": {
+        "type": "object",
+        "required": [
+          "id",
+          "tipo",
+          "itemId",
+          "descricao",
+          "dataInicio",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "Bicicleta",
+              "Tranca"
+            ]
+          },
+          "itemId": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "dataInicio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataFim": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Pendente",
+              "Em Andamento",
+              "Concluida"
+            ]
+          }
+        }
+      },
+      "Notificacao": {
+        "type": "object",
+        "required": [
+          "id",
+          "usuarioId",
+          "mensagem",
+          "dataHora",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "usuarioId": {
+            "type": "string"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "dataHora": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Nao Lida",
+              "Lida"
+            ]
+          }
+        }
+      },
+      "Totem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "localizacao": {
+            "$ref": "#/components/schemas/Localizacao"
+          }
+        }
+      },
+      "Tranca": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "localizacao": {
+            "$ref": "#/components/schemas/Localizacao"
+          }
+        }
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "documento": {
+            "type": "string"
+          },
+          "fotoDocumento": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Alugueis",
+      "description": "Microserviço de Aluguéis de Bicicletas."
+    },
+    {
+      "name": "Usuario",
+      "description": "Gerenciamento de usuários."
+    }
+  ]
+}
