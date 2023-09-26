@@ -21,7 +21,7 @@
 
 /**
  * @swagger
- * /trancas:
+ * /tranca:
  *   post:
  *     summary: Adiciona uma nova tranca
  *     requestBody:
@@ -48,7 +48,7 @@
  *                 $ref: '#/components/schemas/Tranca'
  *       '401':
  *         description: Não autorizado
- * /trancas/{id}:
+ * /tranca/{id}:
  *   put:
  *     summary: Atualiza os dados de uma tranca
  *     parameters:

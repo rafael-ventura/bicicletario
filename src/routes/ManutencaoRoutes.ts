@@ -1,96 +1,99 @@
-// ... (Outros imports e funções)
+/*import { Request, Response } from 'express';*/
+// ... (Outros imports necessários)
 
 /**
  * @swagger
- * /bicicletas/{id}:
+ * /manutencoes/{id}:
  *   put:
- *     summary: Atualiza o status de uma bicicleta
- *     tags: [Bicicleta]
+ *     summary: Atualiza o status de uma manutenção
+ *     tags: [Manutencao]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID da bicicleta.
+ *         description: ID da manutenção.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Bicicleta'
+ *             $ref: '#/components/schemas/Manutencao'
  *           example:
- *             status: "Manutenção"
+ *             status: "concluida"
  *     responses:
  *       200:
- *         description: Bicicleta atualizada com sucesso
+ *         description: Manutenção atualizada com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Bicicleta'
+ *               $ref: '#/components/schemas/Manutencao'
  *       400:
  *         description: Dados de entrada inválidos
  *         content:
  *           application/json:
  *             example:
- *               error: "Informações da bicicleta estão incompletas ou inválidas"
+ *               error: "Informações da manutenção estão incompletas ou inválidas"
  *       404:
- *         description: Bicicleta não encontrada
+ *         description: Manutenção não encontrada
  *         content:
  *           application/json:
  *             example:
- *               error: "Bicicleta não encontrada"
+ *               error: "Manutenção não encontrada"
  *       500:
  *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Não foi possível atualizar a bicicleta"
+ *               error: "Não foi possível atualizar a manutenção"
  */
 /*
-async function updateStatus(req: BikeRequest, res: Response) {
+async function updateStatus(req: ManutencaoRequest, res: Response) {
   // Implementação será feita depois
 }
 */
 
 /**
  * @swagger
- * /bicicletas/{id}:
+ * /manutencoes/{id}:
  *   delete:
- *     summary: Remove uma bicicleta da rede
- *     tags: [Bicicleta]
+ *     summary: Conclui uma manutenção
+ *     tags: [Manutencao]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID da bicicleta.
+ *         description: ID da manutenção.
  *     responses:
  *       204:
- *         description: Bicicleta removida com sucesso
+ *         description: Manutenção concluída com sucesso
  *       404:
- *         description: Bicicleta não encontrada
+ *         description: Manutenção não encontrada
  *         content:
  *           application/json:
  *             example:
- *               error: "Bicicleta não encontrada"
+ *               error: "Manutenção não encontrada"
  *       500:
  *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Não foi possível remover a bicicleta"
+ *               error: "Não foi possível concluir a manutenção"
  */
-/*async function remove(req: Request, res: Response) {
+/*
+async function conclude(req: Request, res: Response) {
   // Implementação será feita depois
-}*/
+}
+*/
 
 /*
 export default {
   register,
   listAll,
-  updateStatus,
-  remove,
+  // updateStatus,
+  // conclude,
 } as const;
 */

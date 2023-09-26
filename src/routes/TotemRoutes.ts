@@ -1,96 +1,99 @@
-// ... (Outros imports e funções)
+/*import { Request, Response } from 'express';*/
+// ... (Outros imports)
 
 /**
  * @swagger
- * /bicicletas/{id}:
+ * /totens/{id}:
  *   put:
- *     summary: Atualiza o status de uma bicicleta
- *     tags: [Bicicleta]
+ *     summary: Atualiza o status de um totem
+ *     tags: [Totem]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID da bicicleta.
+ *         description: ID do totem.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Bicicleta'
+ *             $ref: '#/components/schemas/Totem'
  *           example:
- *             status: "Manutenção"
+ *             status: "Inativo"
  *     responses:
  *       200:
- *         description: Bicicleta atualizada com sucesso
+ *         description: Totem atualizado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Bicicleta'
+ *               $ref: '#/components/schemas/Totem'
  *       400:
  *         description: Dados de entrada inválidos
  *         content:
  *           application/json:
  *             example:
- *               error: "Informações da bicicleta estão incompletas ou inválidas"
+ *               error: "Informações do totem estão incompletas ou inválidas"
  *       404:
- *         description: Bicicleta não encontrada
+ *         description: Totem não encontrado
  *         content:
  *           application/json:
  *             example:
- *               error: "Bicicleta não encontrada"
+ *               error: "Totem não encontrado"
  *       500:
  *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Não foi possível atualizar a bicicleta"
+ *               error: "Não foi possível atualizar o totem"
  */
 /*
-async function updateStatus(req: BikeRequest, res: Response) {
+async function updateStatus(req: TotemRequest, res: Response) {
   // Implementação será feita depois
 }
 */
 
 /**
  * @swagger
- * /bicicletas/{id}:
+ * /totens/{id}:
  *   delete:
- *     summary: Remove uma bicicleta da rede
- *     tags: [Bicicleta]
+ *     summary: Remove um totem da rede
+ *     tags: [Totem]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID da bicicleta.
+ *         description: ID do totem.
  *     responses:
  *       204:
- *         description: Bicicleta removida com sucesso
+ *         description: Totem removido com sucesso
  *       404:
- *         description: Bicicleta não encontrada
+ *         description: Totem não encontrado
  *         content:
  *           application/json:
  *             example:
- *               error: "Bicicleta não encontrada"
+ *               error: "Totem não encontrado"
  *       500:
  *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Não foi possível remover a bicicleta"
+ *               error: "Não foi possível remover o totem"
  */
-/*async function remove(req: Request, res: Response) {
+/*
+async function remove(req: Request, res: Response) {
   // Implementação será feita depois
-}*/
+}
+*/
 
 /*
 export default {
   register,
   listAll,
-  updateStatus,
-  remove,
+  // updateStatus,
+  // remove,
 } as const;
 */

@@ -1,84 +1,75 @@
-/**
- * @swagger
- * components:
- *   schemas:
- *     Totem:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *         marca:
- *           type: string
- *         modelo:
- *           type: string
- *         anoAquisicao:
- *           type: string
- *         localizacaoAtual:
- *           type: string
- */
+// ... (Outros imports e configurações Swagger)
 
 /**
  * @swagger
- * /totens:
- *   post:
- *     summary: Adiciona um novo totem
+ * /totens/{id}:
+ *   put:
+ *     summary: Atualiza o status de um totem
+ *     tags: [Totem]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID do totem.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Totem'
+ *           example:
+ *             status: "Inativo"
  *     responses:
- *       '201':
- *         description: Totem adicionado com sucesso
- *       '400':
- *         description: Dados de entrada inválidos
- *   get:
- *     summary: Lista todos os totens
- *     responses:
- *       '200':
- *         description: Lista de totens
+ *       200:
+ *         description: Totem atualizado com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Totem'
- *       '401':
- *         description: Não autorizado
- * /totens/{id}:
- *   put:
- *     summary: Atualiza os dados de um totem
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Totem'
- *     responses:
- *       '200':
- *         description: Totem atualizado com sucesso
- *       '400':
+ *               $ref: '#/components/schemas/Totem'
+ *       400:
  *         description: Dados de entrada inválidos
- *       '404':
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Informações do totem estão incompletas ou inválidas"
+ *       404:
  *         description: Totem não encontrado
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Totem não encontrado"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Não foi possível atualizar o totem"
+ *
  *   delete:
- *     summary: Remove um totem
+ *     summary: Remove um totem da rede
+ *     tags: [Totem]
  *     parameters:
- *       - name: id
- *         in: path
- *         required: true
+ *       - in: path
+ *         name: id
  *         schema:
- *           type: string
+ *           type: integer
+ *         required: true
+ *         description: ID do totem.
  *     responses:
- *       '204':
+ *       204:
  *         description: Totem removido com sucesso
- *       '404':
+ *       404:
  *         description: Totem não encontrado
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Totem não encontrado"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Não foi possível remover o totem"
  */

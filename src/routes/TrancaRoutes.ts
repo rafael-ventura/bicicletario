@@ -1,96 +1,101 @@
-// ... (Outros imports e funções)
+/*import { Request, Response } from 'express';*/
+// ... (Outros imports necessários)
 
 /**
  * @swagger
- * /bicicletas/{id}:
+ * /trancas/{id}:
  *   put:
- *     summary: Atualiza o status de uma bicicleta
- *     tags: [Bicicleta]
+ *     summary: Atualiza o status de uma tranca
+ *     tags: [Tranca]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID da bicicleta.
+ *         description: ID da tranca.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Bicicleta'
+ *             $ref: '#/components/schemas/Tranca'
  *           example:
- *             status: "Manutenção"
+ *             status: "Inativo"
  *     responses:
  *       200:
- *         description: Bicicleta atualizada com sucesso
+ *         description: Tranca atualizada com sucesso
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Bicicleta'
+ *               $ref: '#/components/schemas/Tranca'
  *       400:
  *         description: Dados de entrada inválidos
  *         content:
  *           application/json:
  *             example:
- *               error: "Informações da bicicleta estão incompletas ou inválidas"
+ *               error: "Informações da tranca estão incompletas ou inválidas"
  *       404:
- *         description: Bicicleta não encontrada
+ *         description: Tranca não encontrada
  *         content:
  *           application/json:
  *             example:
- *               error: "Bicicleta não encontrada"
+ *               error: "Tranca não encontrada"
  *       500:
  *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Não foi possível atualizar a bicicleta"
+ *               error: "Não foi possível atualizar a tranca"
  */
 /*
-async function updateStatus(req: BikeRequest, res: Response) {
+async function updateStatus(req: TrancaRequest, res: Response) {
   // Implementação será feita depois
 }
 */
 
 /**
  * @swagger
- * /bicicletas/{id}:
+ * /trancas/{id}:
  *   delete:
- *     summary: Remove uma bicicleta da rede
- *     tags: [Bicicleta]
+ *     summary: Remove uma tranca da rede
+ *     tags: [Tranca]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID da bicicleta.
+ *         description: ID da tranca.
  *     responses:
  *       204:
- *         description: Bicicleta removida com sucesso
+ *         description: Tranca removida com sucesso
  *       404:
- *         description: Bicicleta não encontrada
+ *         description: Tranca não encontrada
  *         content:
  *           application/json:
  *             example:
- *               error: "Bicicleta não encontrada"
+ *               error: "Tranca não encontrada"
  *       500:
  *         description: Erro interno do servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Não foi possível remover a bicicleta"
+ *               error: "Não foi possível remover a tranca"
  */
-/*async function remove(req: Request, res: Response) {
+/*
+async function remove(req: Request, res: Response) {
   // Implementação será feita depois
-}*/
+}
+*/
+
+
 
 /*
 export default {
-  register,
+  add,
   listAll,
-  updateStatus,
-  remove,
+  // updateStatus,
+  // remove,
 } as const;
 */

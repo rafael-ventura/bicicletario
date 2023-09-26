@@ -21,7 +21,7 @@
  *     tags: [Alugueis]
  *     parameters:
  *       - in: path
- *         name
+ *         name: idUsuario
  *         schema:
  *           type: integer
  *         required: true

@@ -23,7 +23,7 @@
 
 /**
  * @swagger
- * /usuarios:
+ * /usuario:
  *   post:
  *     summary: Cria um novo usuário
  *     requestBody:
@@ -50,8 +50,11 @@
  *                 $ref: '#/components/schemas/Usuario'
  *       '401':
  *         description: Não autorizado
- *         
- * /usuarios/{id}:
+ */
+
+/**
+ * @swagger
+ * /usuario/{id}:
  *   put:
  *     summary: Atualiza os dados de um usuário
  *     parameters:

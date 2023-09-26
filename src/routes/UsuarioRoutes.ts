@@ -10,18 +10,17 @@ interface UserRequest extends Request {
 /**
  * @swagger
  * tags:
- *   name: Usuarios
+ *   name: Usuario
  *   description: Gerenciamento de usuários.
  */
 
 /**
  * @swagger
- * /usuarios:
+ * /usuario:
  *   get:
  *     summary: Lista todos os usuários
  *     description: Retorna uma lista de todos os usuários registrados no sistema.
- *     tags:
- *       - Usuário
+ *     tags: [Usuario]
  *     responses:
  *       200:
  *         description: Lista de usuários.
@@ -63,8 +62,11 @@ async function getAll(req: Request, res: Response) {
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Usuario'
+ *           example:
+ *             nome: "João"
+ *             email: "joao@example.com"
  *     responses:
- *       200:
+ *       201:
  *         description: Usuário criado com sucesso
  *         content:
  *           application/json:
@@ -72,29 +74,82 @@ async function getAll(req: Request, res: Response) {
  *               $ref: '#/components/schemas/Usuario'
  *       400:
  *         description: Requisição inválida
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Informações do usuário estão incompletas ou inválidas"
  *       500:
  *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Não foi possível criar o usuário"
  */
 async function add(req: UserRequest, res: Response) {
   const {user} = req.body;
   await UserService.addOne(user);
-  return res.status(HttpStatusCodes.CREATED).end();
-}
-
-
-
-async function update(req: UserRequest, res: Response) {
-  const {user} = req.body;
-  await UserService.updateOne(user);
-  return res.status(HttpStatusCodes.OK).end();
+  return res.status(HttpStatusCodes.CREATED).json(user);
 }
 
 /**
  * @swagger
- * /usuarios/{id}:
+ * /usuario/{id}:
+ *   put:
+ *     summary: Atualiza os dados de um usuário
+ *     tags: [Usuario]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID do usuário.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Usuario'
+ *           example:
+ *             nome: "João Alterado"
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       404:
+ *         description: Usuário não encontrado
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Usuário não encontrado"
+ *       400:
+ *         description: Requisição inválida
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Informações do usuário estão incompletas ou inválidas"
+ *       500:
+ *         description: Erro interno do servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Não foi possível atualizar o usuário"
+ */
+async function update(req: UserRequest, res: Response) {
+  const {user} = req.body;
+  await UserService.updateOne(user);
+  return res.status(HttpStatusCodes.OK).json(user);
+}
+
+/**
+ * @swagger
+ * /usuario/{id}:
  *   delete:
  *     summary: Remove um usuário.
- *     tags: [Usuarios]
+ *     tags: [Usuario]
  *     parameters:
  *       - in: path
  *         name: id
@@ -118,6 +173,5 @@ export default {
   getAll,
   add,
   update,
-
   delete: delete_,
 } as const;

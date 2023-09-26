@@ -1,6 +1,8 @@
+// eslint-disable-next-line max-len
 /* eslint-disable @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call */
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi, { SwaggerUiOptions } from 'swagger-ui-express';
+import fs from 'fs-extra';
 
 const options = {
   definition: {
@@ -23,6 +25,7 @@ const options = {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
 const specs = swaggerJsDoc(options);
+fs.writeFileSync('swagger.json', JSON.stringify(specs, null, 2));
 const uiOptions: SwaggerUiOptions = { explorer: true };
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
