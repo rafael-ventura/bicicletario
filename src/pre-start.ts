@@ -5,33 +5,18 @@
  */
 
 // NOTE: DO NOT IMPORT ANY SOURCE CODE HERE
+
 import path from 'path';
 import dotenv from 'dotenv';
-import { parse } from 'ts-command-line-args';
 
-
-// **** Types **** //
-
-interface IArgs {
-  env: string;
-}
-
-
-// **** Setup **** //
-
-// Command line arguments
-const args = parse<IArgs>({
-  env: {
-    type: String,
-    defaultValue: 'development',
-    alias: 'e',
-  },
+// Carregar as variáveis de ambiente do arquivo .env
+const result = dotenv.config({
+  path: path.join(__dirname, '../env/development.env'),
 });
 
-// Set the env file
-const result2 = dotenv.config({
-  path: path.join(__dirname, `../env/${args.env}.env`),
-});
-if (result2.error) {
-  throw result2.error;
+// Checar se houve erro ao carregar as variáveis de ambiente
+if (result.error) {
+  throw result.error;
 }
+
+console.log('Variáveis de Ambiente Carregadas!');
