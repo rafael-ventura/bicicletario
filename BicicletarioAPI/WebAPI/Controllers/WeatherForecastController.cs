@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace BicicletarioAPI.Controllers;
+namespace BicicletarioAPI.WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]

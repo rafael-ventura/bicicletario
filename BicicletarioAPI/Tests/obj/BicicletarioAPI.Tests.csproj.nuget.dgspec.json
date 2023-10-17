@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj": {}
+    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.Tests\\BicicletarioAPI.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj": {
+    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.Tests\\BicicletarioAPI.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj",
-        "projectName": "BicicletarioAPI",
-        "projectPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj",
+        "projectUniqueName": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.Tests\\BicicletarioAPI.Tests.csproj",
+        "projectName": "BicicletarioAPI.Tests",
+        "projectPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.Tests\\BicicletarioAPI.Tests.csproj",
         "packagesPath": "C:\\Users\\raf4a\\.nuget\\packages\\",
-        "outputPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\obj\\",
+        "outputPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\raf4a\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -42,21 +42,25 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
-            "Microsoft.AspNetCore.OpenApi": {
+            "Microsoft.NET.Test.Sdk": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[17.7.1, )"
             },
-            "Moq": {
+            "coverlet.collector": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[4.20.69, )"
-            },
-            "Swashbuckle.AspNetCore": {
-              "target": "Package",
-              "version": "[6.5.0, )"
+              "version": "[3.2.0, )"
             },
             "xunit": {
               "target": "Package",
-              "version": "[2.5.3, )"
+              "version": "[2.4.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.5, )"
             }
           },
           "imports": [
@@ -71,9 +75,6 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

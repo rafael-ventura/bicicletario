@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj": {}
+    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.WebAPI\\BicicletarioAPI.WebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj": {
+    "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.WebAPI\\BicicletarioAPI.WebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj",
-        "projectName": "BicicletarioAPI",
-        "projectPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.csproj",
+        "projectUniqueName": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.WebAPI\\BicicletarioAPI.WebAPI.csproj",
+        "projectName": "BicicletarioAPI.WebAPI",
+        "projectPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.WebAPI\\BicicletarioAPI.WebAPI.csproj",
         "packagesPath": "C:\\Users\\raf4a\\.nuget\\packages\\",
-        "outputPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\obj\\",
+        "outputPath": "C:\\Dev\\bicicletario\\BicicletarioAPI\\BicicletarioAPI.WebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\raf4a\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -46,17 +46,9 @@
               "target": "Package",
               "version": "[7.0.11, )"
             },
-            "Moq": {
-              "target": "Package",
-              "version": "[4.20.69, )"
-            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
-            },
-            "xunit": {
-              "target": "Package",
-              "version": "[2.5.3, )"
             }
           },
           "imports": [

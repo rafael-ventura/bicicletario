@@ -1,4 +1,4 @@
-namespace BicicletarioAPI;
+namespace BicicletarioAPI.WebAPI;
 
 public class WeatherForecast
 {
