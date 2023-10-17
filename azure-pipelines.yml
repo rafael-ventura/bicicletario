@@ -43,9 +43,9 @@ steps:
 - task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'SonarCloud'
-    organization: 'bicicletarioAPI'
+    organization: 'bicicletario'  # Nome da sua organização no SonarCloud
     scannerMode: 'MSBuild'
-    projectKey: 'BicicletarioAPI'
+    projectKey: 'rafael-ventura_bicicletario'  # Chave do seu projeto no SonarCloud
     extraProperties: |
       sonar.exclusions=**/obj/**,**/bin/**
 
