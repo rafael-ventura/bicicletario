@@ -42,7 +42,7 @@ steps:
 # Configurando a Análise do SonarCloud
 - task: SonarCloudPrepare@1
   inputs:
-    SonarCloud: 'SonarCloud'
+    SonarCloud: 'Bicicletario Sonar'
     organization: 'bicicletario'  # Nome da sua organização no SonarCloud
     scannerMode: 'MSBuild'
     projectKey: 'rafael-ventura_bicicletario'  # Chave do seu projeto no SonarCloud
@@ -61,12 +61,12 @@ steps:
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: 'dev!'  # Nome da sua assinatura
+    azureSubscription: 'Azure for Students'  # Nome da sua assinatura
     appType: 'webApp'
     WebAppName: 'bicicletario'  # Nome do seu app no Azure
     deployToSlotOrASE: true
     ResourceGroupName: 'dev'  # Nome do seu grupo de recursos
     SlotName: 'staging'
     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-    RuntimeStack: 'DOTNETCORE|3.1'
+    RuntimeStack: 'DOTNETCORE|7.0'
     StartupCommand: 'dotnet BicicletarioAPI.dll'
