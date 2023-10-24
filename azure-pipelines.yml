@@ -61,7 +61,7 @@ steps:
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure for Students'  # Nome da sua assinatura
+    azureSubscription: 'AzureStudent'  # Nome da sua assinatura
     appType: 'webApp'
     WebAppName: 'bicicletario'  # Nome do seu app no Azure
     deployToSlotOrASE: true
