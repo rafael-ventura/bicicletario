@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: AGENT LOCAL
 
 variables:
   buildConfiguration: 'Release'
