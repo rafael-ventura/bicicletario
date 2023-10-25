@@ -8,8 +8,8 @@ variables:
   buildConfiguration: 'Release'
 
 jobs:
-- job: BuildAndTest
-  displayName: 'Build and Test'
+- job: BuildTestAnalyzeDeploy
+  displayName: 'Build, Test, Analyze and Deploy'
   steps:
     # Restaurando pacotes
     - task: DotNetCoreCLI@2
@@ -34,18 +34,6 @@ jobs:
         arguments: '--configuration $(buildConfiguration)'
       displayName: 'Run tests'
 
-    # Publicando o projeto
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'publish'
-        projects: '**/*.csproj'
-        arguments: '--configuration $(buildConfiguration) --output publish_output'
-      displayName: 'Publish project'
-
-- job: SonarCloudAnalysis
-  displayName: 'SonarCloud Analysis'
-  dependsOn: BuildAndTest
-  steps:
     # Configurando a Análise do SonarCloud
     - task: SonarCloudPrepare@1
       inputs:
@@ -64,10 +52,14 @@ jobs:
         pollingTimeoutSec: '300'
       displayName: 'Publish SonarCloud Analysis Results'
 
-- job: DeployToAzure
-  displayName: 'Deploy to Azure'
-  dependsOn: SonarCloudAnalysis
-  steps:
+    # Publicando o projeto
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output publish_output'
+      displayName: 'Publish project'
+
     # Implantação no Azure App Service
     - task: AzureRmWebAppDeployment@4
       inputs:
