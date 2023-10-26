@@ -2,71 +2,74 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: AGENT LOCAL
 
 variables:
   buildConfiguration: 'Release'
 
-steps:
-# Restaurando pacotes
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
-  displayName: 'Restore NuGet packages'
+jobs:
+- job: BuildTestAnalyzeDeploy
+  displayName: 'Build, Test, Analyze and Deploy'
+  steps:
+    # Restaurando pacotes
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+      displayName: 'Restore NuGet packages'
 
-# Construindo o projeto
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-  displayName: 'Build project'
+    # Construindo o projeto
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+      displayName: 'Build project'
 
-# Executando testes
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/*Tests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-  displayName: 'Run tests'
+    # Executando testes
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+      displayName: 'Run tests'
 
-# Publicando o projeto
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --output publish_output'
-  displayName: 'Publish project'
+    # Configurando a Análise do SonarCloud
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'Bicicletario Sonar'
+        organization: 'bicicletario'  # Nome da sua organização no SonarCloud
+        scannerMode: 'MSBuild'
+        projectKey: 'rafael-ventura_bicicletario'  # Chave do seu projeto no SonarCloud
+        extraProperties: |
+          sonar.exclusions=**/obj/**,**/bin/**
 
-# Configurando a Análise do SonarCloud
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'bicicletario'  # Nome da sua organização no SonarCloud
-    scannerMode: 'MSBuild'
-    projectKey: 'rafael-ventura_bicicletario'  # Chave do seu projeto no SonarCloud
-    extraProperties: |
-      sonar.exclusions=**/obj/**,**/bin/**
+    - task: SonarCloudAnalyze@1
+      displayName: 'Run SonarCloud Analysis'
 
-- task: SonarCloudAnalyze@1
-  displayName: 'Run SonarCloud Analysis'
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
+      displayName: 'Publish SonarCloud Analysis Results'
 
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
-  displayName: 'Publish SonarCloud Analysis Results'
+    # Publicando o projeto
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output publish_output'
+      displayName: 'Publish project'
 
-# Implantação no Azure App Service
-- task: AzureRmWebAppDeployment@4
-  inputs:
-    ConnectionType: 'AzureRM'
-    azureSubscription: 'dev!'  # Nome da sua assinatura
-    appType: 'webApp'
-    WebAppName: 'bicicletario'  # Nome do seu app no Azure
-    deployToSlotOrASE: true
-    ResourceGroupName: 'dev'  # Nome do seu grupo de recursos
-    SlotName: 'staging'
-    packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-    RuntimeStack: 'DOTNETCORE|3.1'
-    StartupCommand: 'dotnet BicicletarioAPI.dll'
+    # Implantação no Azure App Service
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'AzureStudent'  # Nome da sua assinatura
+        appType: 'webApp'
+        WebAppName: 'bicicletario'  # Nome do seu app no Azure
+        deployToSlotOrASE: true
+        ResourceGroupName: 'dev'  # Nome do seu grupo de recursos
+        SlotName: 'staging'
+        packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+        RuntimeStack: 'DOTNETCORE|7.0'
+        StartupCommand: 'dotnet BicicletarioAPI.dll'
