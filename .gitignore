@@ -8,7 +8,7 @@
 *project.nuget.cache
 *rider.project.model.nuget.info
 *rider.project.restore.info
-*/obj/*
+obj/*
 
 # User-specific files
 *.rsuser
