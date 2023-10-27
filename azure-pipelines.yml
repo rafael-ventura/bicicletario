@@ -9,7 +9,10 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
+
+
 jobs:
+
 - job: BuildTestAnalyzeDeploy
   displayName: 'Build, Test, Analyze and Deploy'
   steps:
@@ -61,17 +64,5 @@ jobs:
         projects: '**/*.csproj'
         arguments: '--configuration $(buildConfiguration) --output publish_output'
       displayName: 'Publish project'
-
-    # Implantação no Azure App Service
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'AzureStudent'  # Nome da sua assinatura
-        appType: 'webApp'
-        WebAppName: 'bicicletario'  # Nome do seu app no Azure
-        deployToSlotOrASE: true
-        ResourceGroupName: 'dev'  # Nome do seu grupo de recursos
-        SlotName: 'staging'
-        packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-        RuntimeStack: 'DOTNETCORE|7.0'
-        StartupCommand: 'dotnet BicicletarioAPI.dll'
+    - publish: $(System.DefaultWorkingDirectory)/publish_output
+      artifact: drop
