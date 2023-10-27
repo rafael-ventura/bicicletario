@@ -1,3 +1,5 @@
+name: CD
+
 trigger: none  # Isso garante que este pipeline não seja acionado automaticamente por commits
 
 pr: none  # Desativa a execução do pipeline para Pull Requests
