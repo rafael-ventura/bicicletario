@@ -13,6 +13,13 @@ jobs:
 
 - job: BuildTestAnalyzeDeploy
   displayName: 'Build, Test, Analyze and Deploy'
+   # Limpando a solução
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'run'
+      custom: 'clean'
+    displayName: 'Clean solution'
+    
   steps:
     # Restaurando pacotes
     - task: DotNetCoreCLI@2
@@ -20,6 +27,7 @@ jobs:
         command: 'restore'
         projects: '**/*.csproj'
       displayName: 'Restore NuGet packages'
+
 
     # Construindo o projeto
     - task: DotNetCoreCLI@2
