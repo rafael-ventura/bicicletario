@@ -1,0 +1,39 @@
+name: CD
+
+trigger: none  # Isso garante que este pipeline não seja acionado automaticamente por commits
+
+pr: none  # Desativa a execução do pipeline para Pull Requests
+
+pool:
+  vmImage: 'windows-latest'  # Utiliza a imagem mais recente do Windows
+
+variables:
+  buildConfiguration: 'Release'
+  azureSubscription: 'AzureStudent'
+  webAppName: 'bicicletario'
+  resourceGroupName: 'dev'
+  slotName: 'staging'
+
+stages:
+- stage: Deploy
+  jobs:
+  - job: DeployToStaging
+    steps:
+    # Baixando os artefatos do pipeline de CI (assumindo que o CI já publicou os artefatos)
+    - download: current
+      artifact: drop
+
+    # Implantação no Azure App Service
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: $(azureSubscription)
+        appType: 'webApp'
+        WebAppName: $(webAppName)
+        deployToSlotOrASE: true
+        ResourceGroupName: $(resourceGroupName)
+        SlotName: $(slotName)
+        packageForLinux: '$(Pipeline.Workspace)/drop/**/*.zip'  # Caminho atualizado para os artefatos baixados
+        RuntimeStack: 'DOTNETCORE|7.0'
+        StartupCommand: 'dotnet BicicletarioAPI.dll'
+      displayName: 'Deploy to Azure'

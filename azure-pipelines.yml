@@ -1,94 +1,66 @@
+name: CI
+
 trigger:
-  - main
+- main
 
 pool:
-  vmImage: 'windows-latest'
+   vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildPlatformSonar: 'Any CPU'
 
 jobs:
-  - job: Build
-    strategy:
-      matrix:
-        Application:
-          projectName: 'BicicletarioAPI.Application'
-        Domain:
-          projectName: 'BicicletarioAPI.Domain'
-        Infrastructure:
-          projectName: 'BicicletarioAPI.Infrastructure'
-        WebAPI:
-          projectName: 'BicicletarioAPI.WebAPI'
-        Root:
-          projectName: 'BicicletarioAPI'
-    steps:
-      - task: NuGetToolInstaller@1
 
-      - task: NuGetCommand@2
-        inputs:
-          restoreSolution: '$(solution)'
+- job: BuildTestAnalyzeDeploy
+  displayName: 'Build, Test, Analyze and Deploy'
+  steps:
+    # Restaurando pacotes
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+      displayName: 'Restore NuGet packages'
 
-      - task: VSBuild@1
-        inputs:
-          solution: '**/$(projectName).csproj'
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
+    # Construindo o projeto
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+      displayName: 'Build project'
 
-  - job: Test
-    dependsOn: Build
-    steps:
-      - task: VSTest@2
-        inputs:
-          platform: '$(buildPlatform)'
-          configuration: '$(buildConfiguration)'
-          testAssemblyVer2: |
-            **/BicicletarioAPI.Tests.dll
-          runTestsInIsolation: true
+    # Executando testes
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+      displayName: 'Run tests'
 
-      - task: PublishTestResults@2
-        inputs:
-          testResultsFormat: 'VSTest'
-          testResultsFiles: '**/*.trx'
-          mergeTestResults: true
-          failTaskOnFailedTests: true
+    # Configurando a Análise do SonarCloud
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'Bicicletario Sonar'
+        organization: 'bicicletario'  # Nome da sua organização no SonarCloud
+        scannerMode: 'MSBuild'
+        projectKey: 'rafael-ventura_bicicletario'  # Chave do seu projeto no SonarCloud
+        extraProperties: |
+          sonar.exclusions=**/obj/**,**/bin/**
 
-  - job: SonarCloud
-    dependsOn: Test
-    steps:
-      - task: SonarCloudPrepare@1
-        inputs:
-          SonarCloud: 'Bicicletario Sonar'
-          organization: 'bicicletario'  # Nome da sua organização no SonarCloud
-          scannerMode: 'MSBuild'
-          projectKey: 'rafael-ventura_bicicletario'  # Chave do seu projeto no SonarCloud
-          projectName: 'bicicletario'  # Nome do seu projeto no SonarCloud
-          extraProperties: |
-            sonar.exclusions=**/bin/**,**/obj/**,**/*.dll,**/*.pdb
-            sonar.cs.vstest.reportsPaths=$(Common.TestResultsDirectory)/*.trx
+    - task: SonarCloudAnalyze@1
+      displayName: 'Run SonarCloud Analysis'
 
-      - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
+      displayName: 'Publish SonarCloud Analysis Results'
 
-      - task: SonarCloudPublish@1
-        inputs:
-          pollingTimeoutSec: '300'
-
-  - job: PublishArtifacts
-    dependsOn: SonarCloud
-    steps:
-      # Publicando o projeto
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'publish'
-          projects: '**/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-        displayName: 'Publish project'
-
-      # Publicando os artefatos para serem usados no pipeline de CD
-      - task: PublishBuildArtifacts@1
-        inputs:
-          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'drop'
-          publishLocation: 'Container'
+    # Publicando o projeto
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --output publish_output'
+      displayName: 'Publish project'
+    - publish: $(System.DefaultWorkingDirectory)/publish_output
+      artifact: drop
