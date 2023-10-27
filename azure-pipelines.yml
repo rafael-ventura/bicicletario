@@ -13,12 +13,12 @@ jobs:
 
 - job: BuildTestAnalyzeDeploy
   displayName: 'Build, Test, Analyze and Deploy'
-   # Limpando a solução
-    
+
   steps:
+     # Limpando a solução
     - task: DotNetCoreCLI@2
       inputs:
-        command: 'run'
+        command: 'custom'
         custom: 'clean'
       displayName: 'Clean solution'
   
