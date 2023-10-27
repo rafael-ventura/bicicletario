@@ -4,7 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>BicicletarioAPI.Domain</RootNamespace>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>bicicleta.Domain</RootNamespace>
   </PropertyGroup>
 
 </Project>

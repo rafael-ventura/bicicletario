@@ -3,6 +3,7 @@ using BicicletarioAPI.Domain;
 using BicicletarioAPI.WebAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Xunit;
 
 namespace BicicletarioAPI.Tests
 {

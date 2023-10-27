@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>BicicletarioAPI.Tests</RootNamespace>
+    <RootNamespace>bicicleta.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
