@@ -11,7 +11,7 @@ variables:
   buildConfiguration: 'Release'
   azureSubscription: 'AzureStudent'
   webAppName: 'bicicletario'
-  resourceGroupName: 'dev'
+  resourceGroupName: 'pm'
   slotName: 'staging'
 
 stages:
