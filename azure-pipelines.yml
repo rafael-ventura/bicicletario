@@ -20,7 +20,14 @@ jobs:
         custom: 'clean'
         projects: '**/*.csproj'
       displayName: 'Clean solution'
-  
+
+    # Restaurando o SDK do .NET 7.0
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '7.0.x'
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+    
     # Restaurando pacotes
     - task: DotNetCoreCLI@2
       inputs:
