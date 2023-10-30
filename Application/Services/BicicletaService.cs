@@ -19,7 +19,7 @@ public class BicicletaService : IBicicletaService
 
     public Task<Bicicleta> ObterBicicleta(int id)
     {
-        Task<Bicicleta> bicicleta = _bicicletaRepository.Get(id);
+        var bicicleta = _bicicletaRepository.Get(id);
 
         if (bicicleta == null)
             throw new BicicletaNaoEncontradaException(id);
@@ -27,14 +27,14 @@ public class BicicletaService : IBicicletaService
         return bicicleta;
     }
     
-    public IEnumerable<Bicicleta> ObterTodasBicicletas()
+    public Task<IEnumerable<Bicicleta>> ObterTodasBicicletas()
     {
-        IEnumerable<Bicicleta> bicicletas = _bicicletaRepository.GetAll();
+        var bicicletas = _bicicletaRepository.GetAll();
 
-        Bicicleta[] obterTodasBicicletas = bicicletas as Bicicleta[] ?? bicicletas.ToArray();
+        var obterTodasBicicletas = bicicletas as Bicicleta[] ?? bicicletas.ToArray();
         if (bicicletas == null || !obterTodasBicicletas.Any())
             throw new BicicletaNaoEncontradaException();
 
-        return obterTodasBicicletas;
+        return Task.FromResult<IEnumerable<Bicicleta>>(obterTodasBicicletas);
     }
 }

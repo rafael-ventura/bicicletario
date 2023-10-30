@@ -7,5 +7,5 @@ public interface IBicicletaService
 {
     public Task<Bicicleta> ObterBicicleta(int id);
 
-    public IEnumerable<Bicicleta> ObterTodasBicicletas();
+    public Task<IEnumerable<Bicicleta>> ObterTodasBicicletas();
 }

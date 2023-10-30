@@ -17,17 +17,17 @@ public class BicicletasController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public Task<Bicicleta> Get(int id)
     {
         try
         {
             var bicicleta = _bicicletaService.ObterBicicleta(id);
 
-            return Ok(bicicleta);
+            return bicicleta;
         }
-        catch (BicicletaNaoEncontradaException ex)
+        catch (BicicletaNaoEncontradaException)
         {
-            return NotFound(new { error = ex.Message });
+            throw new BicicletaNaoEncontradaException(id);
         }
         catch (Exception ex)
         {
@@ -36,7 +36,7 @@ public class BicicletasController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Bicicleta> Get()
+    public Task<IEnumerable<Bicicleta>> Get()
     {
         try
         {
