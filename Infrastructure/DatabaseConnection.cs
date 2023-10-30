@@ -1,19 +1,18 @@
-﻿using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
 namespace BicicletarioAPI.Infrastructure;
 
 public class DatabaseConnection
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _connectionString;
 
-    public DatabaseConnection(IConfiguration configuration)
+    public DatabaseConnection(string connectionString)
     {
-        _configuration = configuration;
+        _connectionString = connectionString;
     }
 
-    public IDbConnection CreateConnection()
+    public SqlConnection CreateConnection()
     {
-        return new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        return new SqlConnection(_connectionString);
     }
 }

@@ -1,49 +1,79 @@
-﻿using System.Data;
+﻿using BicicletarioAPI.Domain.Interfaces;
+using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using BicicletarioAPI.Domain;
-using BicicletarioAPI.Domain.Interfaces;
+using BicicletarioAPI.Domain.Models;
+using SqlCommand = Microsoft.Data.SqlClient.SqlCommand;
+using SqlConnection = Microsoft.Data.SqlClient.SqlConnection;
+using SqlDataReader = Microsoft.Data.SqlClient.SqlDataReader;
 
-namespace BicicletarioAPI.Infrastructure.Repositories;
-
-public class BicicletaRepository : IBicicletaRepository
+namespace BicicletarioAPI.Infrastructure.Repositories
 {
-    private readonly DatabaseConnection _databaseConnection;
-
-    public BicicletaRepository(DatabaseConnection databaseConnection)
+    public class BicicletaRepository : IBicicletaRepository
     {
-        _databaseConnection = databaseConnection;
-    }
+        private readonly string _connectionString;
 
-    public Bicicleta Get(int id)
-    {
-        Bicicleta bicicleta = null!;
-
-        using (var dbConnection = _databaseConnection.CreateConnection())
+        public BicicletaRepository(string connectionString)
         {
-            dbConnection.Open();
+            _connectionString = connectionString;
+        }
 
-            using (var dbCommand = dbConnection.CreateCommand())
+        public async Task<Bicicleta> Get(int id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
             {
-                dbCommand.CommandText = "SELECT Id, Marca, Modelo, Cor FROM Bicicletas WHERE Id = @Id";
-                var parameter = new SqlParameter("@Id", id);
-                dbCommand.Parameters.Add(parameter);
-
-                using (var reader = dbCommand.ExecuteReader())
+                await connection.OpenAsync();
+                using (var cmd = new SqlCommand("SELECT * FROM Bicicletas WHERE Id = @id", connection))
                 {
-                    if (reader.Read())
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    using (var reader = await cmd.ExecuteReaderAsync())
                     {
-                        bicicleta = new Bicicleta
+                        if (await reader.ReadAsync())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Marca = reader.GetString(reader.GetOrdinal("Marca")),
-                            Modelo = reader.GetString(reader.GetOrdinal("Modelo")),
-                            Cor = reader.GetString(reader.GetOrdinal("Cor"))
-                        };
+                            return new Bicicleta
+                            {
+                                Id = reader.GetInt32(0),
+                                Modelo = reader.GetString(1),
+                                Marca = reader.GetString(2),
+                                Cor = reader.GetString(3)
+                            };
+                        }
                     }
                 }
             }
+
+            return null!;
         }
 
-        return bicicleta;
+
+        public IEnumerable<Bicicleta> GetAll()
+        {
+            var bicicletas = new List<Bicicleta>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                using (var cmd = new SqlCommand("SELECT * FROM Bicicletas", connection))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            bicicletas.Add(new Bicicleta
+                            {
+                                Id = reader.GetInt32(0),
+                                Modelo = reader.GetString(1),
+                                Marca = reader.GetString(2),
+                                Cor = reader.GetString(3)
+                            });
+                        }
+                    }
+                }
+            }
+
+            return bicicletas;
+        }
     }
 }

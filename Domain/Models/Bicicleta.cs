@@ -1,4 +1,4 @@
-﻿namespace BicicletarioAPI.Domain;
+﻿namespace BicicletarioAPI.Domain.Models;
 
 public class Bicicleta
 {
