@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<RootNamespace>BicicletarioAPI</RootNamespace>
+	<UserSecretsId>b78b8012-2a87-41bd-b975-c668473ad01d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
