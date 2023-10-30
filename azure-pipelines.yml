@@ -10,16 +10,15 @@ variables:
   buildConfiguration: 'Release'
 
 jobs:
-
 - job: BuildTestAnalyzeDeploy
   displayName: 'Build, Test, Analyze and Deploy'
-
   steps:
-     # Limpando a solução
+    # Limpando a solução
     - task: DotNetCoreCLI@2
       inputs:
         command: 'custom'
         custom: 'clean'
+        projects: '**/*.csproj'
       displayName: 'Clean solution'
   
     # Restaurando pacotes
@@ -29,14 +28,34 @@ jobs:
         projects: '**/*.csproj'
       displayName: 'Restore NuGet packages'
 
-
-    # Construindo o projeto
+    # Construindo os projetos individualmente
     - task: DotNetCoreCLI@2
       inputs:
         command: 'build'
-        projects: '**/*.csproj'
-        arguments: '--configuration $(buildConfiguration)'
-      displayName: 'Build project'
+        projects: 'Application/Application.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Application'
+      displayName: 'Build Application'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: 'Domain/Domain.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Domain'
+      displayName: 'Build Domain'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: 'Infrastructure/Infrastructure.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Infrastructure'
+      displayName: 'Build Infrastructure'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: 'WebAPI/WebAPI.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/WebAPI'
+      displayName: 'Build WebAPI'
 
     # Executando testes
     - task: DotNetCoreCLI@2
