@@ -1,4 +1,6 @@
 using BicicletarioAPI.Application;
+using BicicletarioAPI.Application.Interfaces;
+using BicicletarioAPI.Application.Services;
 using BicicletarioAPI.Domain;
 using BicicletarioAPI.WebAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +15,10 @@ namespace BicicletarioAPI.Tests
         public void Get_ReturnsOkResult_WithBicicleta()
         {
             // Arrange
-            var mockService = new Mock<BicicletaService>();
+            var mockService = new Mock<IBicicletaService>();
             var testBicicleta = new Bicicleta { Id = 1, Modelo = "Mountain Bike" };
             mockService.Setup(service => service.ObterBicicleta(1)).Returns(testBicicleta);
-            
+
             var controller = new BicicletasController(mockService.Object);
 
             // Act

@@ -1,10 +1,11 @@
 ﻿// ReSharper disable once RedundantUsingDirective
 
+using BicicletarioAPI.Application.Interfaces;
 using BicicletarioAPI.Domain;
 
-namespace BicicletarioAPI.Application;
+namespace BicicletarioAPI.Application.Services;
 
-public class BicicletaService
+public class BicicletaService : IBicicletaService
 {
     public Bicicleta ObterBicicleta(int id)
     {

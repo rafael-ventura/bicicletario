@@ -1,3 +1,8 @@
+using BicicletarioAPI.Application.Interfaces;
+using BicicletarioAPI.Application.Services;
+using BicicletarioAPI.Domain.Interfaces;
+using BicicletarioAPI.Infrastructure;
+using BicicletarioAPI.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -5,7 +10,10 @@ using Microsoft.Extensions.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<BicicletarioAPI.Application.BicicletaService>();
+builder.Services.AddScoped<IBicicletaRepository, BicicletaRepository>();
+builder.Services.AddScoped<IBicicletaService, BicicletaService>();
+builder.Services.AddSingleton<DatabaseConnection>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

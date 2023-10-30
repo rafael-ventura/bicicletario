@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
     <PackageReference Include="Moq" Version="4.20.69" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="xunit" Version="2.5.3" />
   </ItemGroup>
 
@@ -28,10 +29,6 @@
     <_ContentIncludedByDefault Remove="Tests\obj\project.assets.json" />
     <_ContentIncludedByDefault Remove="Tests\obj\project.packagespec.json" />
     <_ContentIncludedByDefault Remove="Tests\obj\Tests.csproj.nuget.dgspec.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
   </ItemGroup>
 
 </Project>
