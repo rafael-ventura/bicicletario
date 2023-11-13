@@ -14,17 +14,19 @@ public interface IBicicletaRepository
     
     public Task<Bicicleta> Delete(int id);
     
+    public Task<Bicicleta> IntegrarNaRede(Bicicleta bicicleta);
+    
     public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
         BicicletaStatus statusAcaoReparador);
     
     public Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status);
     
-    public Task<Bicicleta> AtualizarBicicleta(int id, Bicicleta bicicleta);
-    
-    public Task<Bicicleta> RemoverBicicleta(int id);
-    
-    public Task<Bicicleta> IntegrarNaRede(Bicicleta bicicleta);
-    
     public Task<Bicicleta> ObterBicicletaPorNumero(int numero);
+    
+    
+    
+
+    
+    
     
 }

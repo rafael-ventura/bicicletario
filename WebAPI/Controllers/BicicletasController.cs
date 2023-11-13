@@ -17,7 +17,7 @@ public class BicicletasController : ControllerBase
         _bicicletaService = bicicletaService;
     }
 
-    
+
     // GET: api/bicicletas
     [HttpGet]
     public async Task<IActionResult> Get()
@@ -48,7 +48,8 @@ public class BicicletasController : ControllerBase
         try
         {
             var bicicletaCriada = await _bicicletaService.CriarBicicleta(novaBicicleta);
-            return CreatedAtAction(nameof(Get), new { id = bicicletaCriada.Id }, new { mensagem = "Bicicleta criada com sucesso.", bicicletaCriada });
+            return CreatedAtAction(nameof(Get), new { id = bicicletaCriada.Id },
+                new { mensagem = "Bicicleta criada com sucesso.", bicicletaCriada });
         }
         catch (Exception ex)
         {
@@ -84,7 +85,7 @@ public class BicicletasController : ControllerBase
             }
             else
             {
-                return NotFound(new { mensagem = "Bicicleta não encontrada." });
+                return NotFound(new { mensagem = new BicicletaNaoEncontradaException() });
             }
         }
         catch (Exception ex)
@@ -106,15 +107,17 @@ public class BicicletasController : ControllerBase
             }
             else
             {
-                return Task.FromResult<IActionResult>(NotFound(new { mensagem = "Bicicleta não encontrada para remoção." }));
+                return Task.FromResult<IActionResult>(NotFound(new
+                    { mensagem = "Bicicleta não encontrada para remoção." }));
             }
         }
         catch (Exception ex)
         {
-            return Task.FromResult<IActionResult>(BadRequest(new { mensagem = "Erro ao remover bicicleta.", erro = ex.Message }));
+            return Task.FromResult<IActionResult>(BadRequest(new
+                { mensagem = "Erro ao remover bicicleta.", erro = ex.Message }));
         }
     }
-    
+
     [HttpPost("integrarNaRede")]
     public async Task<IActionResult> IntegrarNaRede([FromBody] Bicicleta bicicleta)
     {
@@ -128,16 +131,16 @@ public class BicicletasController : ControllerBase
             return StatusCode(500, new { message = ex.Message });
         }
     }
-    
+
     [HttpPost("retirarDaRede")]
     public async Task<IActionResult> RetirarDaRede([FromBody] RetirarDaRedeRequest request)
     {
         try
         {
             var bicicletaRemovida = await _bicicletaService.RetirarDaRede(
-                request.IdTranca, 
-                request.IdBicicleta, 
-                request.IdFuncionario, 
+                request.IdTranca,
+                request.IdBicicleta,
+                request.IdFuncionario,
                 request.StatusAcaoReparador
             );
             return Ok(new { mensagem = "Bicicleta retirada da rede com sucesso.", bicicletaRemovida });
@@ -173,6 +176,4 @@ public class BicicletasController : ControllerBase
             return StatusCode(500, new { mensagem = "Erro ao atualizar o status da bicicleta.", erro = ex.Message });
         }
     }
-
-
 }

@@ -1,5 +1,5 @@
 namespace bicicletario.Domain.Interfaces;
 
-public interface IAluguelRepository
+public interface ITotemRepository
 {
 }

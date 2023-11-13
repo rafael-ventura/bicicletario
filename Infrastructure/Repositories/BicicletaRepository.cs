@@ -45,8 +45,7 @@ namespace bicicletario.Infrastructure.Repositories
 
             return null!;
         }
-
-
+        
         public IEnumerable<Bicicleta> GetAll()
         {
             var bicicletas = new List<Bicicleta>();
@@ -150,7 +149,9 @@ namespace bicicletario.Infrastructure.Repositories
         public async Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
             BicicletaStatus statusAcaoReparador)
         {
-            // IMPLEMENTE UM CODIGO QUE SIMULA A RETIRADA DE UMA BICICLETA NA REDE DE TOKENS E ATUALIZA O STATUS DELA 
+            // IMPLEMENTE UM CODIGO QUE SIMULA A RETIRADA DE UMA BICICLETA NA REDE DE TOKENS E ATUALIZA O STATUS DELA
+            
+            
         }
         
         public async Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status)
