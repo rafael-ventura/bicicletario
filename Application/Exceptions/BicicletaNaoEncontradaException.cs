@@ -1,6 +1,6 @@
-﻿namespace BicicletarioAPI.Application.Exceptions;
+﻿namespace bicicletario.Application.Exceptions;
 
-public class BicicletaNaoEncontradaException : Exception
+public class BicicletaNaoEncontradaException : ApiException
 {
     public BicicletaNaoEncontradaException(int bicicletaId)
         : base($"Bicicleta com ID {bicicletaId} não foi encontrada.")

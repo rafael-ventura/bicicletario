@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace BicicletarioAPI.Infrastructure;
+namespace bicicletario.Infrastructure;
 
 public class DatabaseConnection
 {

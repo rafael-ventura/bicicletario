@@ -1,4 +1,4 @@
-﻿namespace BicicletarioAPI.Application.Exceptions;
+﻿namespace bicicletario.Application.Exceptions;
 
 public class ApiException : Exception
 {
