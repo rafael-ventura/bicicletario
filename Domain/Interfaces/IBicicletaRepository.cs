@@ -14,7 +14,7 @@ public interface IBicicletaRepository
     
     public Task<Bicicleta> Delete(int id);
     
-    public Task<Bicicleta> IntegrarNaRede(Bicicleta bicicleta);
+    public Task<Bicicleta> IntegrarNaRede(int idTotem, int idBicicleta, int idFuncionario);
     
     public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
         BicicletaStatus statusAcaoReparador);

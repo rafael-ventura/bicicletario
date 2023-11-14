@@ -7,4 +7,10 @@ public class TotemNaoEncontradoException : ApiException
     {
         
     }
+    
+    public TotemNaoEncontradoException()
+        : base("Nenhum totem foi encontrado.")
+    {
+        
+    }
 }

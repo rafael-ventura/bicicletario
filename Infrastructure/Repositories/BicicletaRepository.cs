@@ -1,4 +1,5 @@
-﻿using bicicletario.Domain.Interfaces;
+﻿using bicicletario.Application.Exceptions;
+using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 using SqlCommand = Microsoft.Data.SqlClient.SqlCommand;
 using SqlConnection = Microsoft.Data.SqlClient.SqlConnection;
@@ -139,18 +140,55 @@ namespace bicicletario.Infrastructure.Repositories
             return bicicleta;
         }
         
-        public async Task<Bicicleta> IntegrarNaRede(Bicicleta bicicleta)
+        public async Task<Bicicleta> IntegrarNaRede(int idTotem, int idBicicleta, int idFuncionario)
         {
-            // IMPLEMENTE UM CODIGO QUE SIMULA A INTEGRACAO DE UMA BICICLETA NA REDE DE TOKENS
-            var tranca = await _trancaRepository.Get(bicicleta.Id);
+            var bicicleta = await Get(idTotem);
+            var tranca = await _trancaRepository.Get(idBicicleta);
             
+            if (bicicleta == null)
+                throw new BicicletaNaoEncontradaException(idBicicleta);
+            if (tranca == null)
+                throw new TrancaNaoEncontradaException(idBicicleta);
+            
+            if (bicicleta.Status != BicicletaStatus.DISPONIVEL)
+                throw new BicicletaNaoDisponivelException(idTotem);
+            
+            if (tranca.Status != TrancaStatus.LIVRE)
+                throw new TrancaNaoDisponivelException(idBicicleta);
+            
+            bicicleta.Status = BicicletaStatus.EM_USO;
+            tranca.Status = TrancaStatus.OCUPADA;
+            
+            await Update(bicicleta.Id, bicicleta);
+            await _trancaRepository.Update(tranca.Id, tranca);
+            
+            return bicicleta;
         }
         
         public async Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
             BicicletaStatus statusAcaoReparador)
         {
-            // IMPLEMENTE UM CODIGO QUE SIMULA A RETIRADA DE UMA BICICLETA NA REDE DE TOKENS E ATUALIZA O STATUS DELA
+            var bicicleta = await Get(idBicicleta);
+            var tranca = await _trancaRepository.Get(idTranca);
             
+            if (bicicleta == null)
+                throw new BicicletaNaoEncontradaException(idBicicleta);
+            if (tranca == null)
+                throw new TrancaNaoEncontradaException(idTranca);
+            
+            if (bicicleta.Status != BicicletaStatus.EM_USO)
+                throw new BicicletaNaoDisponivelException(idBicicleta);
+            
+            if (tranca.Status != TrancaStatus.OCUPADA)
+                throw new TrancaNaoDisponivelException(idTranca);
+            
+            bicicleta.Status = statusAcaoReparador;
+            tranca.Status = (TrancaStatus)statusAcaoReparador;
+            
+            await Update(bicicleta.Id, bicicleta);
+            await _trancaRepository.Update(tranca.Id, tranca);
+            
+            return bicicleta;
             
         }
         
@@ -172,7 +210,7 @@ namespace bicicletario.Infrastructure.Repositories
                 }
             }
 
-            
+            return bicicleta;
         }
         
         public async Task<Bicicleta> ObterBicicletaPorNumero(int numero)

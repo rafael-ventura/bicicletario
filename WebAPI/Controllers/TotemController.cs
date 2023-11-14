@@ -5,76 +5,143 @@ using bicicletario.Application.Interfaces;
 
 namespace bicicletario.WebAPI.Controllers;
 
+// TotemController.cs
+
 [ApiController]
 [Route("[controller]")]
 public class TotemController : ControllerBase
 {
-    private readonly ITotemService _iTotemService;
+    private readonly ITotemService _totemService;
 
-    public TotemController(ITotemService iTotemService)
+    public TotemController(ITotemService totemService)
     {
-        _iTotemService = iTotemService;
+        _totemService = totemService;
     }
 
-    // Adicionando métodos baseados nos endpoints listados no JSON...
-
-    // POST: /totem
-    [HttpPost("totem")]
-    public async Task<IActionResult> CriarTotem([FromBody] Totem novoTotem)
+    // GET: /totem
+    [HttpGet]
+    public async Task<IActionResult> GetTotens()
     {
         try
         {
-            var totemCriado = await _iTotemService.CriarTotem(novoTotem);
-            return CreatedAtAction(nameof(CriarTotem), new { id = totemCriado.Id }, totemCriado);
+            var totens = await _totemService.ObterTodosTotens();
+            if (!totens.Any())
+            {
+                return NotFound(new { mensagem = "Nenhum totem encontrado." });
+            }
+            return Ok(new { mensagem = "Totens recuperados com sucesso.", totens });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { mensagem = "Erro ao criar totem.", erro = ex.Message });
+            return StatusCode(500, new { mensagem = "Erro ao recuperar totens.", erro = ex.Message });
+        }
+    }
+
+    // POST: /totem
+    [HttpPost]
+    public async Task<IActionResult> IncluirTotem([FromBody] NovoTotem novoTotem)
+    {
+        try
+        {
+            var totemCriado = await _totemService.IncluirTotem(novoTotem);
+            return CreatedAtAction(nameof(GetTotemPorId), new { id = totemCriado.Id }, new { mensagem = "Totem criado com sucesso.", totemCriado });
+        }
+        catch (DadosInvalidosException ex)
+        {
+            return UnprocessableEntity(new { mensagem = ex.Message });
         }
     }
 
     // PUT: /totem/{idTotem}
-    [HttpPut("totem/{idTotem}")]
+    [HttpPut("{idTotem}")]
     public async Task<IActionResult> EditarTotem(int idTotem, [FromBody] Totem totemAtualizado)
     {
         try
         {
-            var totemEditado = await _iTotemService.EditarTotem(idTotem, totemAtualizado);
+            var totemEditado = await _totemService.EditarTotem(idTotem, totemAtualizado);
             return Ok(new { mensagem = "Totem editado com sucesso.", totemEditado });
         }
         catch (TotemNaoEncontradoException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new { mensagem = "Totem não encontrado." });
         }
-        catch (Exception ex)
+        catch (DadosInvalidosException ex)
         {
-            return BadRequest(new { mensagem = "Erro ao editar totem.", erro = ex.Message });
+            return UnprocessableEntity(new { mensagem = ex.Message });
         }
     }
 
     // DELETE: /totem/{idTotem}
-    [HttpDelete("totem/{idTotem}")]
+    [HttpDelete("{idTotem}")]
     public async Task<IActionResult> RemoverTotem(int idTotem)
     {
         try
         {
-            await _iTotemService.RemoverTotem(idTotem);
+            await _totemService.RemoverTotem(idTotem);
             return Ok(new { mensagem = "Totem removido com sucesso." });
         }
         catch (TotemNaoEncontradoException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new { mensagem = "Totem não encontrado." });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { mensagem = "Erro ao remover totem.", erro = ex.Message });
+            return StatusCode(500, new { mensagem = "Erro ao remover totem.", erro = ex.Message });
         }
     }
 
-    // Os outros métodos seguiriam um padrão semelhante, implementando a lógica conforme as operações CRUD básicas
-    // e as especificações do seu arquivo JSON para as entidades de 'Tranca', 'Bicicleta', etc.
+    // GET: /totem/{idTotem}/trancas
+    [HttpGet("{idTotem}/trancas")]
+    public async Task<IActionResult> ListarTrancasDoTotem(int idTotem)
+    {
+        try
+        {
+            var trancas = await _totemService.ListarTrancasDoTotem(idTotem);
+            return Ok(new { mensagem = "Trancas listadas com sucesso.", trancas });
+        }
+        catch (TotemNaoEncontradoException ex)
+        {
+            return NotFound(new { mensagem = "Totem não encontrado." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { mensagem = "Erro ao listar trancas do totem.", erro = ex.Message });
+        }
+    }
 
-    // Certifique-se de que a camada de serviço (IEquipamentoService) tem métodos correspondentes para realizar as operações.
-    // E que as exceções são tratadas adequadamente.
-}
+    // GET: /totem/{idTotem}/bicicletas
+    [HttpGet("{idTotem}/bicicletas")]
+    public async Task<IActionResult> ListarBicicletasDoTotem(int idTotem)
+    {
+        try
+        {
+            var bicicletas = await _totemService.ListarBicicletasDoTotem(idTotem);
+            return Ok(new { mensagem = "Bicicletas listadas com sucesso.", bicicletas });
+        }
+        catch (TotemNaoEncontradoException ex)
+        {
+            return NotFound(new { mensagem = "Totem não encontrado." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { mensagem = "Erro ao listar bicicletas do totem.", erro = ex.Message });
+        }
+    }
 
+    // Método auxiliar para GET por ID (não documentado, mas necessário para as ações de CreatedAt)
+    private async Task<IActionResult> GetTotemPorId(int id)
+    {
+        try
+        {
+            var totem = await _totemService.ObterTotem(id);
+            return Ok(new { mensagem = "Totem recuperado com sucesso.", totem });
+        }
+        catch (TotemNaoEncontradoException ex)
+        {
+            return NotFound(new { mensagem = "Totem não encontrado." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { mensagem = "Erro ao recuperar totem.", erro = ex.Message });
+        }
+    }

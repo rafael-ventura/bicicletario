@@ -7,6 +7,6 @@ public class TrancaController : Controller
     // GET
     public IActionResult Index()
     {
-        return View();
+        
     }
 }

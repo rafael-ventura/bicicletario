@@ -14,11 +14,14 @@ public class BicicletaService : IBicicletaService
 {
     private readonly IBicicletaRepository _bicicletaRepository;
     private readonly ITrancaRepository _trancaRepository;
-    private readonly IALuguelRepository _aLuguelRepository;
+    private readonly ITotemRepository _totemRepository;
 
-    public BicicletaService(IBicicletaRepository bicicletaRepository)
+    public BicicletaService(IBicicletaRepository bicicletaRepository, ITrancaRepository trancaRepository,
+        ITotemRepository totemRepository)
     {
         _bicicletaRepository = bicicletaRepository;
+        _trancaRepository = trancaRepository;
+        _totemRepository = totemRepository;
     }
 
     public Task<Bicicleta> ObterBicicleta(int id)
@@ -49,9 +52,9 @@ public class BicicletaService : IBicicletaService
         return bicicletaCriada;
     }
 
-    public Task<Bicicleta> IntegrarNaRede(Bicicleta bicicleta)
+    public Task<Bicicleta> IntegrarNaRede(int idTotem, int idTranca, int idFuncionario)
     {
-        var bicicletaIntegrada = _bicicletaRepository.IntegrarNaRede(bicicleta);
+        var bicicletaIntegrada = _bicicletaRepository.IntegrarNaRede(idTotem, idTranca, idFuncionario);
 
         return bicicletaIntegrada;
     }
@@ -85,7 +88,7 @@ public class BicicletaService : IBicicletaService
         var bicicleta = _bicicletaRepository.Get(idBicicleta);
         var tranca = _trancaRepository.Get(idTranca);
 
-        // idFuncionario = _aLuguelRepository.Get(idFuncionario);
+        // idFuncionario = _totemRepository.Get(idFuncionario);
         if (idFuncionario != null)
         {
             bicicleta = _bicicletaRepository.RetirarDaRede(idTranca, idBicicleta, idFuncionario, statusAcaoReparador);

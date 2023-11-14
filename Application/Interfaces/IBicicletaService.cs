@@ -12,7 +12,7 @@ public interface IBicicletaService
     
     public Task<Bicicleta> CriarBicicleta(Bicicleta bicicleta);
     
-    public Task<Bicicleta> IntegrarNaRede(Bicicleta bicicleta);
+    public Task<Bicicleta> IntegrarNaRede(int idTotem, int idTranca, int idFuncionario);
     
     public bool RemoverBicicleta(int id);
     

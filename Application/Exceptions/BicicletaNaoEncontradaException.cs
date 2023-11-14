@@ -12,6 +12,17 @@ public class BicicletaNaoEncontradaException : ApiException
     {
     }
     
-    
+}
 
+public class BicicletaNaoDisponivelException : ApiException
+{
+    public BicicletaNaoDisponivelException(int bicicletaId)
+        : base($"Bicicleta com ID {bicicletaId} não está disponível.")
+    {
+    }
+
+    public BicicletaNaoDisponivelException()
+        : base("Nenhuma bicicleta está disponível.")
+    {
+    }
 }
