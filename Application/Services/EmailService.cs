@@ -1,4 +1,5 @@
-﻿using bicicletario.Domain.dtos;
+﻿using bicicletario.Application.Interfaces;
+using bicicletario.Domain.dtos;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 

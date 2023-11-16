@@ -1,7 +1,7 @@
 ﻿using bicicletario.Domain.dtos;
 using bicicletario.Domain.Models;
 
-namespace bicicletario.Domain.Interfaces;
+namespace bicicletario.Application.Interfaces;
 
 public interface IEmailService
 {
