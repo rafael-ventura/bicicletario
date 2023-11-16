@@ -1,13 +1,8 @@
-﻿// ReSharper disable once RedundantUsingDirective
-
-using System.Net;
-using bicicletario.Application.Exceptions;
+﻿using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace bicicletario.Application.Services;
 
@@ -82,22 +77,12 @@ public class BicicletaService : IBicicletaService
     public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
         string statusAcaoReparador)
     {
-        //atualizar o status baseado no enum. a documentacao tb diz q esse ecara retira uma bicicelta para reparo ou aposentadoria
-        // copilot, consegue fazer um codigo que tire a bicicleta da redes de totens e atualize o status dessa bicicelta para o que vier em statusAcaoReparador?
-        // o statusAcaoReparador pode ser "reparo" ou "aposentadoria"
 
         var bicicleta = _bicicletaRepository.Get(idBicicleta);
         var tranca = _trancaRepository.Get(idTranca);
 
         // idFuncionario = _totemRepository.Get(idFuncionario);
-        if (idFuncionario != null)
-        {
-            bicicleta = _bicicletaRepository.RetirarDaRede(idTranca, idBicicleta, idFuncionario, statusAcaoReparador);
-        }
-        else
-        {
-            throw new FuncionarioNaoAutorizadoException(idFuncionario);
-        }
+        bicicleta = _bicicletaRepository.RetirarDaRede(idTranca, idBicicleta, idFuncionario, statusAcaoReparador);
 
         return bicicleta;
     }
