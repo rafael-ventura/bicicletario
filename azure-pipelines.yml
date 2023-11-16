@@ -22,17 +22,20 @@ jobs:
           command: clean
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
+
       - task: DotNetCoreCLI@2
         displayName: 'Restore solution'
         inputs:
           command: restore
           projects: '**/*.csproj'
+
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:
           command: build
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
+
       - task: DotNetCoreCLI@2
         displayName: 'Test solution'
         inputs:
@@ -43,7 +46,7 @@ jobs:
       # Passo para preparar a análise SonarCloud
       - task: SonarCloudPrepare@1
         inputs:
-          SonarCloud: 'bike'
+          SonarCloud: 'SonarCloud'
           organization: 'rafaelventura'
           scannerMode: 'MSBuild'
           projectKey: 'rafael-ventura_bicicletario'
@@ -52,6 +55,7 @@ jobs:
             sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
             sonar.coverage.exclusions="**Tests*.cs"
             sonar.login="9970105f3d9489edff4656f4b71b702442066822"
+
       # Passo para análise SonarCloud
       - task: SonarCloudAnalyze@1
 
@@ -67,5 +71,6 @@ jobs:
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration) --output publish_output'
         displayName: 'Publish project'
+
       - publish: $(System.DefaultWorkingDirectory)/publish_output
         artifact: drop
