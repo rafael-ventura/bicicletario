@@ -1,14 +1,10 @@
 name: CI
-
 trigger:
   - main
-
 pool:
   vmImage: ubuntu-latest
-
 variables:
   buildConfiguration: 'Release'
-
 jobs:
   - job: BuildTestAnalyzeDeploy
     displayName: 'Build, Test, Analyze and Deploy'
@@ -26,20 +22,17 @@ jobs:
           command: clean
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
-
       - task: DotNetCoreCLI@2
         displayName: 'Restore solution'
         inputs:
           command: restore
           projects: '**/*.csproj'
-
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:
           command: build
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
-
       - task: DotNetCoreCLI@2
         displayName: 'Test solution'
         inputs:
@@ -59,7 +52,6 @@ jobs:
             sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
             sonar.coverage.exclusions="**Tests*.cs"
             sonar.login="9970105f3d9489edff4656f4b71b702442066822"
-
       # Passo para análise SonarCloud
       - task: SonarCloudAnalyze@1
 
@@ -67,9 +59,7 @@ jobs:
       - task: SonarCloudPublish@1
         inputs:
           pollingTimeoutSec: '300'
-      
-      
-      
+
       # Publicando o projeto
       - task: DotNetCoreCLI@2
         inputs:
