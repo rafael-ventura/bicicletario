@@ -7,12 +7,8 @@ using bicicletario.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IBicicletaRepository, BicicletaRepository>();
-builder.Services.AddScoped<IBicicletaService, BicicletaService>();
-builder.Services.AddScoped<ITotemRepository, TotemRepository>();
-builder.Services.AddScoped<ITotemService, TotemService>();
-builder.Services.AddScoped<ITrancaRepository, TrancaRepository>();
-builder.Services.AddScoped<ITrancaService, TrancaService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 
 
 builder.Services.AddControllers();
