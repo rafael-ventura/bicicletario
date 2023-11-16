@@ -1,103 +1,103 @@
 name: CI
 
 trigger:
-- main
+  - main
 
 pool:
-   vmImage: 'windows-latest'
+  vmImage: ubuntu-latest
 
 variables:
   buildConfiguration: 'Release'
 
 jobs:
-- job: BuildTestAnalyzeDeploy
-  displayName: 'Build, Test, Analyze and Deploy'
-  steps:
-    # Limpando a solução
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'custom'
-        custom: 'clean'
-        projects: '**/*.csproj'
-      displayName: 'Clean solution'
+  - job: BuildTestAnalyzeDeploy
+    displayName: 'Build, Test, Analyze and Deploy'
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET Core sdk'
+        inputs:
+          packageType: sdk
+          version: 7.x
+          installationPath: $(Agent.ToolsDirectory)/dotnet
 
-    # Restaurando o SDK do .NET 7.0
-    - task: UseDotNet@2
-      inputs:
-        packageType: 'sdk'
-        version: '7.0.x'
-        installationPath: $(Agent.ToolsDirectory)/dotnet
-    
-    # Restaurando pacotes
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'restore'
-        projects: '**/*.csproj'
-      displayName: 'Restore NuGet packages'
+      - task: DotNetCoreCLI@2
+        displayName: 'Clean solution'
+        inputs:
+          command: 'custom'
+          custom: 'clean'
+          projects: '**/*.csproj'
 
-    # Construindo os projetos individualmente
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'build'
-        projects: 'Application/Application.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Application'
-      displayName: 'Build Application'
+      - task: DotNetCoreCLI@2
+        displayName: 'Restore NuGet packages'
+        inputs:
+          command: 'restore'
+          projects: '**/*.csproj'
 
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'build'
-        projects: 'Domain/Domain.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Domain'
-      displayName: 'Build Domain'
+      # Ordem de Build ajustada considerando dependências
+      - task: DotNetCoreCLI@2
+        displayName: 'Build Domain'
+        inputs:
+          command: 'build'
+          projects: 'Domain/Domain.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Domain'
 
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'build'
-        projects: 'Infrastructure/Infrastructure.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Infrastructure'
-      displayName: 'Build Infrastructure'
+      - task: DotNetCoreCLI@2
+        displayName: 'Build Application'
+        inputs:
+          command: 'build'
+          projects: 'Application/Application.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Application'
 
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'build'
-        projects: 'WebAPI/WebAPI.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/WebAPI'
-      displayName: 'Build WebAPI'
+      - task: DotNetCoreCLI@2
+        displayName: 'Build Infrastructure'
+        inputs:
+          command: 'build'
+          projects: 'Infrastructure/Infrastructure.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Infrastructure'
 
-     # Executando testes com coleta de cobertura de código
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'test'
-        projects: '**/*Tests.csproj'
-        arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
-      displayName: 'Run tests with code coverage'
+      - task: DotNetCoreCLI@2
+        displayName: 'Build WebAPI'
+        inputs:
+          command: 'build'
+          projects: 'WebAPI/WebAPI.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/WebAPI'
+      
+      
+      
+      # Executando testes com coleta de cobertura de código
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: '**/*Tests.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
+        displayName: 'Run tests with code coverage'
+      
+      # Configurando a Análise do SonarCloud
+      - task: SonarCloudPrepare@1
+        inputs:
+          SonarCloud: 'Bicicletario Sonar'
+          organization: 'bicicletario'
+          scannerMode: 'MSBuild'
+          projectKey: 'rafael-ventura_bicicletario'
+          extraProperties: |
+            sonar.exclusions=**/obj/**,**/bin/**
+            sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)/**/TestResults/**/*.coveragexml
 
-    # Configurando a Análise do SonarCloud
-    - task: SonarCloudPrepare@1
-      inputs:
-        SonarCloud: 'Bicicletario Sonar'
-        organization: 'bicicletario'
-        scannerMode: 'MSBuild'
-        projectKey: 'rafael-ventura_bicicletario'
-        extraProperties: |
-          sonar.exclusions=**/obj/**,**/bin/**
-          sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)/**/TestResults/**/*.coveragexml
 
+      - task: SonarCloudAnalyze@1
+        displayName: 'Run SonarCloud Analysis'
 
-    - task: SonarCloudAnalyze@1
-      displayName: 'Run SonarCloud Analysis'
-
-    - task: SonarCloudPublish@1
-      inputs:
-        pollingTimeoutSec: '300'
-      displayName: 'Publish SonarCloud Analysis Results'
-
-    # Publicando o projeto
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'publish'
-        projects: '**/*.csproj'
-        arguments: '--configuration $(buildConfiguration) --output publish_output'
-      displayName: 'Publish project'
-    - publish: $(System.DefaultWorkingDirectory)/publish_output
-      artifact: drop
+      - task: SonarCloudPublish@1
+        inputs:
+          pollingTimeoutSec: '300'
+        displayName: 'Publish SonarCloud Analysis Results'
+      
+      # Publicando o projeto
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'publish'
+          projects: '**/*.csproj'
+          arguments: '--configuration $(buildConfiguration) --output publish_output'
+        displayName: 'Publish project'
+      - publish: $(System.DefaultWorkingDirectory)/publish_output
+        artifact: drop
