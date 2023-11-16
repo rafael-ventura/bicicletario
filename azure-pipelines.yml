@@ -46,7 +46,7 @@ jobs:
       # Passo para preparar a análise SonarCloud
       - task: SonarCloudPrepare@1
         inputs:
-          SonarCloud: 'SonarCloud'
+          SonarCloud: 'bike'
           organization: 'rafaelventura'
           scannerMode: 'MSBuild'
           projectKey: 'rafael-ventura_bicicletario'
