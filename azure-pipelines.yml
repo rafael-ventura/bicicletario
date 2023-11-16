@@ -19,57 +19,50 @@ jobs:
           packageType: sdk
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
-          
-      # Limpando a solução
+
       - task: DotNetCoreCLI@2
+        displayName: 'Clean solution'
         inputs:
           command: 'custom'
           custom: 'clean'
           projects: '**/*.csproj'
-        displayName: 'Clean solution'
-      
-      # Restaurando o SDK do .NET 7.0
-      - task: UseDotNet@2
-        inputs:
-          packageType: 'sdk'
-          version: '7.0.x'
-          installationPath: $(Agent.ToolsDirectory)/dotnet
-      
-      # Restaurando pacotes
+
       - task: DotNetCoreCLI@2
+        displayName: 'Restore NuGet packages'
         inputs:
           command: 'restore'
           projects: '**/*.csproj'
-        displayName: 'Restore NuGet packages'
-      
-      # Construindo os projetos individualmente
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'build'
-          projects: 'Application/Application.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Application'
-        displayName: 'Build Application'
 
+      # Ordem de Build ajustada considerando dependências
       - task: DotNetCoreCLI@2
+        displayName: 'Build Domain'
         inputs:
           command: 'build'
           projects: 'Domain/Domain.csproj'
           arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Domain'
-        displayName: 'Build Domain'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Build Application'
+        inputs:
+          command: 'build'
+          projects: 'Application/Application.csproj'
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Application'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build Infrastructure'
         inputs:
           command: 'build'
           projects: 'Infrastructure/Infrastructure.csproj'
           arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Infrastructure'
-        displayName: 'Build Infrastructure'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Build WebAPI'
         inputs:
           command: 'build'
           projects: 'WebAPI/WebAPI.csproj'
           arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/WebAPI'
-        displayName: 'Build WebAPI'
+      
+      
       
       # Executando testes com coleta de cobertura de código
       - task: DotNetCoreCLI@2
