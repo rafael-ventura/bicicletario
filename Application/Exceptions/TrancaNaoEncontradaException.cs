@@ -3,7 +3,7 @@ namespace bicicletario.Application.Exceptions;
 public class TrancaNaoEncontradaException : ApiException
 {
     public TrancaNaoEncontradaException(int trancaId)
-        : base($"Tranca com ID {trancaId} não foi encontrada.")
+        : base($"Tranca com ID {trancaId} não foi encontrada.", 404)
     {
         
     }

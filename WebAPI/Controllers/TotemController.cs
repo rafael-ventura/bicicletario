@@ -2,6 +2,7 @@ using bicicletario.Application.Exceptions;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using bicicletario.Application.Interfaces;
+using bicicletario.Domain.dtos;
 
 namespace bicicletario.WebAPI.Controllers;
 
@@ -20,7 +21,7 @@ public class TotemController : ControllerBase
 
     // GET: /totem
     [HttpGet]
-    public async Task<IActionResult> GetTotens()
+    public async Task<IActionResult> Get()
     {
         try
         {
@@ -29,6 +30,7 @@ public class TotemController : ControllerBase
             {
                 return NotFound(new { mensagem = "Nenhum totem encontrado." });
             }
+
             return Ok(new { mensagem = "Totens recuperados com sucesso.", totens });
         }
         catch (Exception ex)
@@ -39,12 +41,12 @@ public class TotemController : ControllerBase
 
     // POST: /totem
     [HttpPost]
-    public async Task<IActionResult> IncluirTotem([FromBody] NovoTotem novoTotem)
+    public async Task<IActionResult> Create([FromBody] NovoTotemRequest novoTotemRequest)
     {
         try
         {
-            var totemCriado = await _totemService.IncluirTotem(novoTotem);
-            return CreatedAtAction(nameof(GetTotemPorId), new { id = totemCriado.Id }, new { mensagem = "Totem criado com sucesso.", totemCriado });
+            var totem = await _totemService.IncluirTotem(novoTotemRequest);
+            return CreatedAtAction(nameof(Create), new { id = totem.Id }, totem);
         }
         catch (DadosInvalidosException ex)
         {
@@ -52,9 +54,9 @@ public class TotemController : ControllerBase
         }
     }
 
-    // PUT: /totem/{idTotem}
-    [HttpPut("{idTotem}")]
-    public async Task<IActionResult> EditarTotem(int idTotem, [FromBody] Totem totemAtualizado)
+    // PUT: /totem/{numero}
+    [HttpPut("{numero}")]
+    public async Task<IActionResult> Update(int idTotem, [FromBody] Totem totemAtualizado)
     {
         try
         {
@@ -71,9 +73,9 @@ public class TotemController : ControllerBase
         }
     }
 
-    // DELETE: /totem/{idTotem}
-    [HttpDelete("{idTotem}")]
-    public async Task<IActionResult> RemoverTotem(int idTotem)
+    // DELETE: /totem/{numero}
+    [HttpDelete("{numero}")]
+    public async Task<IActionResult> Delete(int idTotem)
     {
         try
         {
@@ -90,9 +92,9 @@ public class TotemController : ControllerBase
         }
     }
 
-    // GET: /totem/{idTotem}/trancas
-    [HttpGet("{idTotem}/trancas")]
-    public async Task<IActionResult> ListarTrancasDoTotem(int idTotem)
+    // GET: /totem/{numero}/trancas
+    [HttpGet("{numero}/trancas")]
+    public async Task<IActionResult> GetTrancasDoTotem(int idTotem)
     {
         try
         {
@@ -109,9 +111,9 @@ public class TotemController : ControllerBase
         }
     }
 
-    // GET: /totem/{idTotem}/bicicletas
-    [HttpGet("{idTotem}/bicicletas")]
-    public async Task<IActionResult> ListarBicicletasDoTotem(int idTotem)
+    // GET: /totem/{numero}/bicicletas
+    [HttpGet("{numero}/bicicletas")]
+    public async Task<IActionResult> GetBicicletasDoTotem(int idTotem)
     {
         try
         {
@@ -129,7 +131,7 @@ public class TotemController : ControllerBase
     }
 
     // Método auxiliar para GET por ID (não documentado, mas necessário para as ações de CreatedAt)
-    private async Task<IActionResult> GetTotemPorId(int id)
+    private async Task<IActionResult> Get(int id)
     {
         try
         {
@@ -145,3 +147,5 @@ public class TotemController : ControllerBase
             return StatusCode(500, new { mensagem = "Erro ao recuperar totem.", erro = ex.Message });
         }
     }
+
+}

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using bicicletario.Domain.dtos;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,16 +11,16 @@ public interface IBicicletaService
 
     public Task<IEnumerable<Bicicleta>> ObterTodasBicicletas();
     
-    public Task<Bicicleta> CriarBicicleta(Bicicleta bicicleta);
+    public Task<Bicicleta> CriarBicicleta(NovaBicicletaRequest bicicleta);
     
     public Task<Bicicleta> IntegrarNaRede(int idTotem, int idTranca, int idFuncionario);
     
     public bool RemoverBicicleta(int id);
     
     public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
-        BicicletaStatus statusAcaoReparador);
+        string statusAcaoReparador);
     
-    public Task<Bicicleta> AtualizarBicicleta(int id, Bicicleta bicicleta);
+    public Task<Bicicleta> AtualizarBicicleta(int id, NovaBicicletaRequest bicicleta);
     
     public Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status);
     

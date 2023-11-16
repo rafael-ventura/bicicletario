@@ -15,7 +15,7 @@ namespace bicicletario.Tests
         {
             // Arrange
             var mockService = new Mock<IBicicletaService>();
-            var testBicicleta = new Bicicleta { Id = 1, Modelo = "Modelo", Marca = "Marca", Ano = 2021, Numero = 1, Status = BicicletaStatus.NOVA };
+            var testBicicleta = new Bicicleta { Id = 1, Modelo = "Modelo", Marca = "Marca", Ano = "2021", Numero = 1, Status = BicicletaStatus.NOVA };
             mockService.Setup(service => service.ObterBicicleta(1)).ReturnsAsync(testBicicleta);
 
             var controller = new BicicletasController(mockService.Object);
@@ -50,7 +50,7 @@ namespace bicicletario.Tests
         {
             // Arrange
             var mockService = new Mock<IBicicletaService>();
-            var testBicicleta = new Bicicleta { Id = 1, Modelo = "Modelo", Marca = "Marca", Ano = 2021, Numero = 1, Status = BicicletaStatus.NOVA };
+            var testBicicleta = new Bicicleta { Id = 1, Modelo = "Modelo", Marca = "Marca", Ano = "2021", Numero = 1, Status = BicicletaStatus.NOVA };
         }
 
     }

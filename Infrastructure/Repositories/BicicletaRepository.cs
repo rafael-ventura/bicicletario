@@ -1,4 +1,5 @@
 ﻿using bicicletario.Application.Exceptions;
+using bicicletario.Domain.dtos;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 using SqlCommand = Microsoft.Data.SqlClient.SqlCommand;
@@ -35,9 +36,9 @@ namespace bicicletario.Infrastructure.Repositories
                                 Id = reader.GetInt32(0),
                                 Modelo = reader.GetString(1),
                                 Marca = reader.GetString(2),
-                                Ano = reader.GetInt32(3),
+                                Ano = reader.GetInt32(3).ToString(),
                                 Numero = reader.GetInt32(4),
-                                Status = (BicicletaStatus) reader.GetInt32(5)
+                                Status = (BicicletaStatus)reader.GetInt32(5)
                             };
                         }
                     }
@@ -46,7 +47,7 @@ namespace bicicletario.Infrastructure.Repositories
 
             return null!;
         }
-        
+
         public IEnumerable<Bicicleta> GetAll()
         {
             var bicicletas = new List<Bicicleta>();
@@ -65,9 +66,9 @@ namespace bicicletario.Infrastructure.Repositories
                                 Id = reader.GetInt32(0),
                                 Modelo = reader.GetString(1),
                                 Marca = reader.GetString(2),
-                                Ano = reader.GetInt32(3),
+                                Ano = reader.GetInt32(3).ToString(),
                                 Numero = reader.GetInt32(4),
-                                Status = (BicicletaStatus) reader.GetInt32(5)
+                                Status = (BicicletaStatus)reader.GetInt32(5)
                             });
                         }
                     }
@@ -76,52 +77,61 @@ namespace bicicletario.Infrastructure.Repositories
 
             return bicicletas;
         }
-        
-        public async Task<Bicicleta> Create(Bicicleta bicicleta)
+
+        public async Task<Bicicleta> Create(NovaBicicletaRequest bicicleta)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 using (var cmd = new SqlCommand(
-                    "INSERT INTO Bicicletas (Modelo, Marca, Ano, Numero, Status) VALUES (@modelo, @marca, @ano, @numero, @status); SELECT SCOPE_IDENTITY()",
-                    connection))
+                           "INSERT INTO Bicicletas (Marca, Modelo, Ano, Numero, Status) VALUES (@marca, @modelo, @ano, @numero, @status); SELECT SCOPE_IDENTITY()",
+                           connection))
                 {
-                    cmd.Parameters.AddWithValue("@modelo", bicicleta.Modelo);
-                    cmd.Parameters.AddWithValue("@marca", bicicleta.Marca);
-                    cmd.Parameters.AddWithValue("@ano", bicicleta.Ano);
-                    cmd.Parameters.AddWithValue("@numero", bicicleta.Numero);
-                    cmd.Parameters.AddWithValue("@status", bicicleta.Status);
+                    cmd.Parameters.AddWithValue("@marca", bicicleta.marca);
+                    cmd.Parameters.AddWithValue("@modelo", bicicleta.modelo);
+                    cmd.Parameters.AddWithValue("@ano", bicicleta.ano);
+                    cmd.Parameters.AddWithValue("@numero", bicicleta.numero);
+                    cmd.Parameters.AddWithValue("@status", bicicleta.status);
 
-                    bicicleta.Id = (int) (decimal) (await cmd.ExecuteScalarAsync() ?? 0);
+                    var id = await cmd.ExecuteScalarAsync();
+                    return new Bicicleta
+                    {
+                        Id = (int)(id ?? 0),
+                        Marca = bicicleta.marca,
+                        Modelo = bicicleta.modelo,
+                        Ano = bicicleta.ano,
+                        Numero = bicicleta.numero,
+                        Status = bicicleta.status
+                    };
                 }
             }
-
-            return bicicleta;
         }
-        
-        public async Task<Bicicleta> Update(int id, Bicicleta bicicleta)
+
+        public async Task<Bicicleta> Update(int id, NovaBicicletaRequest bicicleta)
         {
+            var bicicletaAtual = await Get(id);
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 using (var cmd = new SqlCommand(
-                    "UPDATE Bicicletas SET Modelo = @modelo, Marca = @marca, Ano = @ano, Numero = @numero, Status = @status WHERE Id = @id",
-                    connection))
+                           "UPDATE Bicicletas SET Marca = @marca, Modelo = @modelo, Ano = @ano, Numero = @numero, Status = @status WHERE Id = @id",
+                           connection))
                 {
-                    cmd.Parameters.AddWithValue("@id", bicicleta.Id);
-                    cmd.Parameters.AddWithValue("@modelo", bicicleta.Modelo);
-                    cmd.Parameters.AddWithValue("@marca", bicicleta.Marca);
-                    cmd.Parameters.AddWithValue("@ano", bicicleta.Ano);
-                    cmd.Parameters.AddWithValue("@numero", bicicleta.Numero);
-                    cmd.Parameters.AddWithValue("@status", bicicleta.Status);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@marca", bicicleta.marca);
+                    cmd.Parameters.AddWithValue("@modelo", bicicleta.modelo);
+                    cmd.Parameters.AddWithValue("@ano", bicicleta.ano);
+                    cmd.Parameters.AddWithValue("@numero", bicicleta.numero);
+                    cmd.Parameters.AddWithValue("@status", bicicleta.status);
+
 
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
 
-            return bicicleta;
+            return bicicletaAtual;
         }
-        
+
         public async Task<Bicicleta> Delete(int id)
         {
             var bicicleta = await Get(id);
@@ -139,80 +149,74 @@ namespace bicicletario.Infrastructure.Repositories
 
             return bicicleta;
         }
-        
+
         public async Task<Bicicleta> IntegrarNaRede(int idTotem, int idBicicleta, int idFuncionario)
         {
             var bicicleta = await Get(idTotem);
             var tranca = await _trancaRepository.Get(idBicicleta);
-            
+
             if (bicicleta == null)
                 throw new BicicletaNaoEncontradaException(idBicicleta);
             if (tranca == null)
                 throw new TrancaNaoEncontradaException(idBicicleta);
-            
-            if (bicicleta.Status != BicicletaStatus.DISPONIVEL)
-                throw new BicicletaNaoDisponivelException(idTotem);
-            
-            if (tranca.Status != TrancaStatus.LIVRE)
-                throw new TrancaNaoDisponivelException(idBicicleta);
-            
-            bicicleta.Status = BicicletaStatus.EM_USO;
-            tranca.Status = TrancaStatus.OCUPADA;
-            
-            await Update(bicicleta.Id, bicicleta);
-            await _trancaRepository.Update(tranca.Id, tranca);
-            
+            if (bicicleta.Status != BicicletaStatus.EM_USO)
+                throw new BicicletaNaoDisponivelException(idBicicleta);
+
+            if (tranca.Status != TrancaStatus.OCUPADA)
+                throw new TrancaNaoDisponivelException(idTotem);
+
+            bicicleta.Status = BicicletaStatus.DISPONIVEL;
+            tranca.Status = TrancaStatus.LIVRE;
+
+            // await Update(bicicleta.Id, bicicleta);
+
             return bicicleta;
         }
-        
+
         public async Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
-            BicicletaStatus statusAcaoReparador)
+            string statusAcaoReparador)
         {
             var bicicleta = await Get(idBicicleta);
             var tranca = await _trancaRepository.Get(idTranca);
-            
+
             if (bicicleta == null)
                 throw new BicicletaNaoEncontradaException(idBicicleta);
             if (tranca == null)
                 throw new TrancaNaoEncontradaException(idTranca);
-            
-            if (bicicleta.Status != BicicletaStatus.EM_USO)
-                throw new BicicletaNaoDisponivelException(idBicicleta);
-            
-            if (tranca.Status != TrancaStatus.OCUPADA)
-                throw new TrancaNaoDisponivelException(idTranca);
-            
-            bicicleta.Status = statusAcaoReparador;
-            tranca.Status = (TrancaStatus)statusAcaoReparador;
-            
-            await Update(bicicleta.Id, bicicleta);
-            await _trancaRepository.Update(tranca.Id, tranca);
-            
+
+            if (bicicleta.Status != BicicletaStatus.DISPONIVEL)
+                throw new BicicletaNaoDisponivelException(idTranca);
+
+            if (tranca.Status != TrancaStatus.LIVRE)
+                throw new TrancaNaoDisponivelException(idBicicleta);
+
+            bicicleta.Status = BicicletaStatus.EM_USO;
+            tranca.Status = TrancaStatus.OCUPADA;
+
+            /*await Update(bicicleta.Id, bicicleta);*/
+            await _trancaRepository.UpdateBicicleta(tranca.Id, tranca);
+
             return bicicleta;
-            
         }
-        
+
         public async Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status)
         {
-            var bicicleta = await Get(id);
-
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
-                using (var cmd = new SqlCommand(
-                    "UPDATE Bicicletas SET Status = @status WHERE Id = @id",
-                    connection))
-                {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.Parameters.AddWithValue("@status", status);
+                var bicicleta = await Get(id);
 
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                if (bicicleta == null)
+                    throw new BicicletaNaoEncontradaException(id);
+
+                bicicleta.Status = status;
+
+                /*await Update(bicicleta.Id, bicicleta);*/
+
+                return bicicleta;
             }
-
-            return bicicleta;
         }
-        
+
+
         public async Task<Bicicleta> ObterBicicletaPorNumero(int numero)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -231,9 +235,9 @@ namespace bicicletario.Infrastructure.Repositories
                                 Id = reader.GetInt32(0),
                                 Modelo = reader.GetString(1),
                                 Marca = reader.GetString(2),
-                                Ano = reader.GetInt32(3),
+                                Ano = reader.GetInt32(3).ToString(),
                                 Numero = reader.GetInt32(4),
-                                Status = (BicicletaStatus) reader.GetInt32(5)
+                                Status = (BicicletaStatus)reader.GetInt32(5)
                             };
                         }
                     }
@@ -242,6 +246,5 @@ namespace bicicletario.Infrastructure.Repositories
 
             return null!;
         }
-        
     }
 }

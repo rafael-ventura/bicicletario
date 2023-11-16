@@ -3,6 +3,7 @@
 using System.Net;
 using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
+using bicicletario.Domain.dtos;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -45,7 +46,7 @@ public class BicicletaService : IBicicletaService
         return Task.FromResult<IEnumerable<Bicicleta>>(obterTodasBicicletas);
     }
 
-    public Task<Bicicleta> CriarBicicleta(Bicicleta bicicleta)
+    public Task<Bicicleta> CriarBicicleta(NovaBicicletaRequest bicicleta)
     {
         var bicicletaCriada = _bicicletaRepository.Create(bicicleta);
 
@@ -60,7 +61,7 @@ public class BicicletaService : IBicicletaService
     }
 
     
-    public Task<Bicicleta> AtualizarBicicleta(int id, Bicicleta bicicleta)
+    public Task<Bicicleta> AtualizarBicicleta(int id, NovaBicicletaRequest bicicleta)
     {
         var bicicletaAtualizada = _bicicletaRepository.Update(id, bicicleta);
 
@@ -79,7 +80,7 @@ public class BicicletaService : IBicicletaService
     }
 
     public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
-        BicicletaStatus statusAcaoReparador)
+        string statusAcaoReparador)
     {
         //atualizar o status baseado no enum. a documentacao tb diz q esse ecara retira uma bicicelta para reparo ou aposentadoria
         // copilot, consegue fazer um codigo que tire a bicicleta da redes de totens e atualize o status dessa bicicelta para o que vier em statusAcaoReparador?

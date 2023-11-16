@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace bicicletario.WebAPI.Controllers;
 
+// /bicicletas
 [ApiController]
 [Route("[controller]")]
 public class BicicletasController : ControllerBase
@@ -25,9 +26,10 @@ public class BicicletasController : ControllerBase
         try
         {
             var bicicletas = await _bicicletaService.ObterTodasBicicletas();
-            if (bicicletas.Any())
+            var enumerable = bicicletas.ToList();
+            if (enumerable.Any())
             {
-                return Ok(new { mensagem = "Bicicletas recuperadas com sucesso.", bicicletas });
+                return Ok(new { mensagem = "Bicicletas recuperadas com sucesso.", bicicletas = enumerable });
             }
             else
             {
@@ -43,28 +45,32 @@ public class BicicletasController : ControllerBase
 
     // POST: api/bicicletas
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Bicicleta novaBicicleta)
+    public async Task<IActionResult> Post([FromBody] NovaBicicletaRequest novaBicicleta)
     {
         try
         {
             var bicicletaCriada = await _bicicletaService.CriarBicicleta(novaBicicleta);
             return CreatedAtAction(nameof(Get), new { id = bicicletaCriada.Id },
-                new { mensagem = "Bicicleta criada com sucesso.", bicicletaCriada });
+                new { mensagem = "Dados cadastrados.", bicicletaCriada });
+        }
+        catch (DadosInvalidosException ex)
+        {
+            return StatusCode(ex.StatusCode, new { mensagem = ex.Message });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { mensagem = "Erro ao criar bicicleta.", erro = ex.Message });
+            return StatusCode(500, new { mensagem = "Erro ao cadastrar bicicleta.", erro = ex.Message });
         }
     }
 
-    // GET: api/bicicletas/{id}
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    // GET: api/bicicletas/{idBicicleta}
+    [HttpGet("{idBicicleta}")]
+    public async Task<IActionResult> Get(int idBicicleta)
     {
         try
         {
-            var bicicleta = await _bicicletaService.ObterBicicleta(id);
-            return Ok(bicicleta);
+            var bicicleta = await _bicicletaService.ObterBicicleta(idBicicleta);
+            return Ok(new { mensagem = "Bicicleta encontrada.", bicicleta });
         }
         catch (BicicletaNaoEncontradaException)
         {
@@ -72,30 +78,23 @@ public class BicicletasController : ControllerBase
         }
     }
 
-    // PUT: api/bicicletas/{id}
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBicicleta(int id, [FromBody] Bicicleta bicicleta)
+    // PUT: api/bicicletas/{idBicicleta}
+    [HttpPut("{idBicicleta}")]
+    public async Task<IActionResult> Update(int id, [FromBody] NovaBicicletaRequest bicicleta)
     {
         try
         {
             var bicicletaAtualizada = await _bicicletaService.AtualizarBicicleta(id, bicicleta);
-            if (bicicletaAtualizada != null)
-            {
-                return Ok(new { mensagem = "Bicicleta atualizada com sucesso.", bicicletaAtualizada });
-            }
-            else
-            {
-                return NotFound(new { mensagem = new BicicletaNaoEncontradaException() });
-            }
+            return Ok(new { mensagem = "Bicicleta atualizada com sucesso.", bicicletaAtualizada });
         }
-        catch (Exception ex)
+        catch (BicicletaNaoEncontradaException)
         {
-            return BadRequest(new { mensagem = "Erro ao atualizar bicicleta.", erro = ex.Message });
+            return NotFound(new { mensagem = "Bicicleta não encontrada." });
         }
     }
 
-// DELETE: api/bicicletas/{id}
-    [HttpDelete("{id}")]
+// DELETE: api/bicicletas/{idBicicleta}
+    [HttpDelete("{idBicicleta}")]
     public Task<IActionResult> Delete(int id)
     {
         try
@@ -119,16 +118,24 @@ public class BicicletasController : ControllerBase
     }
 
     [HttpPost("integrarNaRede")]
-    public async Task<IActionResult> IntegrarNaRede([FromBody] Bicicleta bicicleta)
+    public async Task<IActionResult> IntegrarNaRede([FromBody] IntegrarNaRedeRequest bicicleta)
     {
         try
         {
-            var bicicletaCriada = await _bicicletaService.CriarBicicleta(bicicleta);
-            return CreatedAtAction(nameof(Get), new { id = bicicletaCriada.Id }, bicicletaCriada);
+            var bicicletaIntegrada = await _bicicletaService.IntegrarNaRede(
+                bicicleta.idTranca,
+                bicicleta.idBicicleta,
+                bicicleta.idFuncionario
+            );
+            return Ok(new { mensagem = "Dados cadastrados.", bicicletaIntegrada });
         }
-        catch (Exception ex)
+        catch (DadosInvalidosException)
         {
-            return StatusCode(500, new { message = ex.Message });
+            return BadRequest(new { mensagem = "Dados inválidos." });
+        }
+        catch (BicicletaNaoEncontradaException)
+        {
+            return NotFound(new { mensagem = "Bicicleta não encontrada." });
         }
     }
 
@@ -174,6 +181,20 @@ public class BicicletasController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, new { mensagem = "Erro ao atualizar o status da bicicleta.", erro = ex.Message });
+        }
+    }
+
+    [HttpGet("numero/{numero}")]
+    public async Task<IActionResult> ObterBicicletaPorNumero(int numero)
+    {
+        try
+        {
+            var bicicleta = await _bicicletaService.ObterBicicletaPorNumero(numero);
+            return Ok(new { mensagem = "Bicicleta encontrada.", bicicleta });
+        }
+        catch (BicicletaNaoEncontradaException)
+        {
+            return NotFound(new { mensagem = "Bicicleta não encontrada." });
         }
     }
 }

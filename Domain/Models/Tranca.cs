@@ -9,6 +9,12 @@ APOSENTADA,
 EM_REPARO
 }
 
+public enum AcaoEnum
+{
+    TRANCAR,
+    DESTRANCAR
+}
+
 public class Tranca
 {
     public int Id { get; set; }

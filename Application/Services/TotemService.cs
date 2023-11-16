@@ -1,11 +1,12 @@
 using bicicletario.Application.Exceptions;
+using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 
 namespace bicicletario.Application.Services;
 
-public class TotemService
+public class TotemService : ITotemService
 {
     private readonly ITotemRepository _totemRepository;
     
@@ -25,7 +26,7 @@ public class TotemService
         
     }
 
-    public Task<Totem> ObterTotemPorId(int id)
+    public Task<Totem> ObterTotem(int id)
     {
         var totem = _totemRepository.ObterTotemPorId(id);
 
@@ -35,9 +36,9 @@ public class TotemService
         return totem;
     }
     
-    public Task<Totem> IncluirTotem(TotemRequest novoTotem)
+    public Task<Totem> IncluirTotem(NovoTotemRequest novoNovoTotemRequest)
     {
-        var totemCriado = _totemRepository.IncluirTotem(novoTotem);
+        var totemCriado = _totemRepository.IncluirTotem(novoNovoTotemRequest);
         
         return totemCriado;
     }
