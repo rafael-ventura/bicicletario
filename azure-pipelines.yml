@@ -20,77 +20,55 @@ jobs:
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
 
+      # Passo para preparar a análise SonarCloud
+      - task: SonarCloudPrepare@1
+        inputs:
+          SonarCloud: 'SonarCloud'
+          organization: 'rafaelventura'
+          scannerMode: 'MSBuild'
+          projectKey: 'rafael-ventura_bicicletario'
+          projectName: 'bicicletario'
+          extraProperties: |
+            sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+            sonar.coverage.exclusions="**Tests*.cs"
+            sonar.login="9970105f3d9489edff4656f4b71b702442066822"
+
+      # Resto do pipeline (Clean, Restore, Build, Test)
       - task: DotNetCoreCLI@2
         displayName: 'Clean solution'
         inputs:
-          command: 'custom'
-          custom: 'clean'
+          command: clean
+          projects: '**/*.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Restore solution'
+        inputs:
+          command: restore
           projects: '**/*.csproj'
 
       - task: DotNetCoreCLI@2
-        displayName: 'Restore NuGet packages'
+        displayName: 'Build solution'
         inputs:
-          command: 'restore'
+          command: build
           projects: '**/*.csproj'
-
-      # Ordem de Build ajustada considerando dependências
-      - task: DotNetCoreCLI@2
-        displayName: 'Build Domain'
-        inputs:
-          command: 'build'
-          projects: 'Domain/Domain.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Domain'
+          arguments: '--configuration $(buildConfiguration)'
 
       - task: DotNetCoreCLI@2
-        displayName: 'Build Application'
+        displayName: 'Test solution'
         inputs:
-          command: 'build'
-          projects: 'Application/Application.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Application'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Build Infrastructure'
-        inputs:
-          command: 'build'
-          projects: 'Infrastructure/Infrastructure.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Infrastructure'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Build WebAPI'
-        inputs:
-          command: 'build'
-          projects: 'WebAPI/WebAPI.csproj'
-          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/WebAPI'
-      
-      
-      
-      # Executando testes com coleta de cobertura de código
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'test'
-          projects: '**/*Tests.csproj'
+          command: test
+          projects: '**/*Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
-        displayName: 'Run tests with code coverage'
-      
-      # Configurando a Análise do SonarCloud
-      - task: SonarCloudPrepare@1
-        inputs:
-          SonarCloud: 'Bicicletario Sonar'
-          organization: 'bicicletario'
-          scannerMode: 'MSBuild'
-          projectKey: 'rafael-ventura_bicicletario'
-          extraProperties: |
-            sonar.exclusions=**/obj/**,**/bin/**
-            sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)/**/TestResults/**/*.coveragexml
 
-
+      # Passo para análise SonarCloud
       - task: SonarCloudAnalyze@1
-        displayName: 'Run SonarCloud Analysis'
 
+      # Passo para publicar os resultados da análise SonarCloud
       - task: SonarCloudPublish@1
         inputs:
           pollingTimeoutSec: '300'
-        displayName: 'Publish SonarCloud Analysis Results'
+    
       
       # Publicando o projeto
       - task: DotNetCoreCLI@2
