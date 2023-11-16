@@ -40,4 +40,8 @@
     <_ContentIncludedByDefault Remove="WebAPI\obj\project.packagespec.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="WebAPI\Controllers\TrancaController.cs" />
+  </ItemGroup>
+
 </Project>
