@@ -63,13 +63,14 @@ public class TotemController : ControllerBase
             var totemEditado = await _totemService.EditarTotem(idTotem, totemAtualizado);
             return Ok(new { mensagem = "Totem editado com sucesso.", totemEditado });
         }
-        catch (TotemNaoEncontradoException ex)
+
+        catch (TotemNaoEncontradoException)
         {
             return NotFound(new { mensagem = "Totem não encontrado." });
         }
-        catch (DadosInvalidosException ex)
+        catch (Exception ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return StatusCode(500, new { mensagem = "Erro ao editar totem.", erro = ex.Message });
         }
     }
 
@@ -82,7 +83,7 @@ public class TotemController : ControllerBase
             await _totemService.RemoverTotem(idTotem);
             return Ok(new { mensagem = "Totem removido com sucesso." });
         }
-        catch (TotemNaoEncontradoException ex)
+        catch (TotemNaoEncontradoException)
         {
             return NotFound(new { mensagem = "Totem não encontrado." });
         }
@@ -101,7 +102,7 @@ public class TotemController : ControllerBase
             var trancas = await _totemService.ListarTrancasDoTotem(idTotem);
             return Ok(new { mensagem = "Trancas listadas com sucesso.", trancas });
         }
-        catch (TotemNaoEncontradoException ex)
+        catch (TotemNaoEncontradoException)
         {
             return NotFound(new { mensagem = "Totem não encontrado." });
         }
@@ -120,31 +121,13 @@ public class TotemController : ControllerBase
             var bicicletas = await _totemService.ListarBicicletasDoTotem(idTotem);
             return Ok(new { mensagem = "Bicicletas listadas com sucesso.", bicicletas });
         }
-        catch (TotemNaoEncontradoException ex)
+        catch (TotemNaoEncontradoException)
         {
             return NotFound(new { mensagem = "Totem não encontrado." });
         }
         catch (Exception ex)
         {
             return StatusCode(500, new { mensagem = "Erro ao listar bicicletas do totem.", erro = ex.Message });
-        }
-    }
-
-    // Método auxiliar para GET por ID (não documentado, mas necessário para as ações de CreatedAt)
-    private async Task<IActionResult> Get(int id)
-    {
-        try
-        {
-            var totem = await _totemService.ObterTotem(id);
-            return Ok(new { mensagem = "Totem recuperado com sucesso.", totem });
-        }
-        catch (TotemNaoEncontradoException ex)
-        {
-            return NotFound(new { mensagem = "Totem não encontrado." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { mensagem = "Erro ao recuperar totem.", erro = ex.Message });
         }
     }
 

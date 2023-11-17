@@ -20,7 +20,7 @@ public class TrancaService : ITrancaService
         _totemRepository = totemRepository;
     }
 
-    public Task<IEnumerable<Tranca>> ObterTodasTrancas()
+    public Task<List<Tranca>> ObterTodasTrancas()
     {
         var trancas = _trancaRepository.GetAll();
 

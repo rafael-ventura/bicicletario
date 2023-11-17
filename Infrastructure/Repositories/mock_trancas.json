@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "BicicletaId": 0,
+    "Numero": 201,
+    "Localizacao": "Parque Central",
+    "AnoDeFabricacao": "2020",
+    "Modelo": "Modelo A",
+    "Status": "LIVRE"
+  },
+  {
+    "Id": 2,
+    "BicicletaId": 1,
+    "Numero": 202,
+    "Localizacao": "Universidade XY",
+    "AnoDeFabricacao": "2021",
+    "Modelo": "Modelo B",
+    "Status": "OCUPADA"
+  }
+]

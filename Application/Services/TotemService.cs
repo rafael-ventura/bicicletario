@@ -15,7 +15,7 @@ public class TotemService : ITotemService
         _totemRepository = totemRepository;
     }
     
-    public Task<IEnumerable<Totem>> ObterTodosTotens()
+    public Task<List<Totem>> ObterTodosTotens()
     {
         var totens = _totemRepository.ObterTodosTotens();
         
@@ -58,7 +58,7 @@ public class TotemService : ITotemService
     }
     
     
-    public Task<IEnumerable<Tranca>> ListarTrancasDoTotem(int idTotem)
+    public Task<List<Tranca>> ListarTrancasDoTotem(int idTotem)
     {
         var trancas = _totemRepository.ListarTrancasDoTotem(idTotem);
         
@@ -68,7 +68,7 @@ public class TotemService : ITotemService
         return trancas;
     }
     
-    public Task<IEnumerable<Bicicleta> > ListarBicicletasDoTotem(int idTotem)
+    public Task<List<Bicicleta> > ListarBicicletasDoTotem(int idTotem)
     {
         var bicicletas = _totemRepository.ListarBicicletasDoTotem(idTotem);
         

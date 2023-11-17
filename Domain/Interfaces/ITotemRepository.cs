@@ -6,7 +6,7 @@ namespace bicicletario.Domain.Interfaces;
 public interface ITotemRepository
     
 {
-   public Task<IEnumerable<Totem>> ObterTodosTotens();
+   public Task<List<Totem>> ObterTodosTotens();
    
    public Task<Totem> ObterTotemPorId(int id);
    
@@ -16,9 +16,9 @@ public interface ITotemRepository
    
    public Task<Totem> RemoverTotem(int id);
    
-   public Task<IEnumerable<Tranca>> ListarTrancasDoTotem(int idTotem);
+   public Task<List<Tranca>> ListarTrancasDoTotem(int idTotem);
    
-   public Task<IEnumerable<Bicicleta>> ListarBicicletasDoTotem(int idTotem);
+   public Task<List<Bicicleta>> ListarBicicletasDoTotem(int idTotem);
    
    
    

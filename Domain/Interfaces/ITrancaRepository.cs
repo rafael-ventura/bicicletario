@@ -5,7 +5,7 @@ namespace bicicletario.Domain.Interfaces;
 
 public interface ITrancaRepository
 {
-    public Task<IEnumerable<Tranca>> GetAll();
+    public Task<List<Tranca>> GetAll();
     public Task<Tranca> Get(int id);
 
     public Task<Tranca> Create(NovaTrancaRequest tranca);

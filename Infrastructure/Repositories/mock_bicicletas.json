@@ -1,0 +1,19 @@
+[
+  {
+    "Id": 1,
+    "Marca": "Scott",
+    "Modelo": "Speedster 200",
+    "Ano": "2021",
+    "Numero": 101,
+    "Status": "DISPONIVEL"
+  },
+  {
+    "Id": 2,
+    "Marca": "Specialized",
+    "Modelo": "Rockhopper 29",
+    "Ano": "2022",
+    "Numero": 102,
+    "Status": "EM_USO"
+  }
+  
+]

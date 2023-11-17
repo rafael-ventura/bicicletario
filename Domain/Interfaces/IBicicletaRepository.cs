@@ -7,7 +7,7 @@ public interface IBicicletaRepository
 {
     public Task<Bicicleta> Get(int id);
 
-    public IEnumerable<Bicicleta> GetAll();
+    public List<Bicicleta> GetAll();
     
     public Task<Bicicleta> Create(NovaBicicletaRequest bicicleta);
 
@@ -20,7 +20,7 @@ public interface IBicicletaRepository
     public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
         string statusAcaoReparador);
 
-    public Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status);
+    public Task<Bicicleta?> AtualizarStatus(int id, BicicletaStatus status);
 
     public Task<Bicicleta> ObterBicicletaPorNumero(int numero);
 }

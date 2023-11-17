@@ -2,152 +2,128 @@
 using bicicletario.Domain.dtos;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
-using SqlCommand = Microsoft.Data.SqlClient.SqlCommand;
-using SqlConnection = Microsoft.Data.SqlClient.SqlConnection;
+using Newtonsoft.Json;
+using Formatting = System.Xml.Formatting;
 
 namespace bicicletario.Infrastructure.Repositories
 {
     public class BicicletaRepository : IBicicletaRepository
     {
-        private readonly string _connectionString;
         private readonly ITrancaRepository _trancaRepository;
 
-        public BicicletaRepository(string connectionString, ITrancaRepository trancaRepository)
+        public BicicletaRepository(ITrancaRepository trancaRepository)
         {
-            _connectionString = connectionString;
             _trancaRepository = trancaRepository;
         }
 
-        public async Task<Bicicleta> Get(int id)
+        // mockar dados
+        public Task<Bicicleta> Get(int id)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                using (var cmd = new SqlCommand("SELECT * FROM Bicicletas WHERE Id = @id", connection))
-                {
-                    cmd.Parameters.AddWithValue("@id", id);
+            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return new Bicicleta
-                            {
-                                Id = reader.GetInt32(0),
-                                Modelo = reader.GetString(1),
-                                Marca = reader.GetString(2),
-                                Ano = reader.GetInt32(3).ToString(),
-                                Numero = reader.GetInt32(4),
-                                Status = (BicicletaStatus)reader.GetInt32(5)
-                            };
-                        }
-                    }
+            if (bicicletas != null)
+            {
+                var bicicleta = bicicletas.FirstOrDefault(b => b.Id == id);
+                if (bicicleta != null)
+                {
+                    return Task.FromResult(bicicleta);
                 }
             }
+            else throw new BicicletaNaoEncontradaException(id);
 
-            return null!;
+            throw new InvalidOperationException();
         }
 
-        public IEnumerable<Bicicleta> GetAll()
+        public List<Bicicleta> GetAll()
         {
-            var bicicletas = new List<Bicicleta>();
+            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
-            using (var connection = new SqlConnection(_connectionString))
+            if (bicicletas != null)
             {
-                connection.Open();
-                using (var cmd = new SqlCommand("SELECT * FROM Bicicletas", connection))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            bicicletas.Add(new Bicicleta
-                            {
-                                Id = reader.GetInt32(0),
-                                Modelo = reader.GetString(1),
-                                Marca = reader.GetString(2),
-                                Ano = reader.GetInt32(3).ToString(),
-                                Numero = reader.GetInt32(4),
-                                Status = (BicicletaStatus)reader.GetInt32(5)
-                            });
-                        }
-                    }
-                }
+                return bicicletas;
             }
 
-            return bicicletas;
+            throw new InvalidOperationException();
         }
 
-        public async Task<Bicicleta> Create(NovaBicicletaRequest bicicleta)
+        public Task<Bicicleta> Create(NovaBicicletaRequest bicicleta)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                using (var cmd = new SqlCommand(
-                           "INSERT INTO Bicicletas (Marca, Modelo, Ano, Numero, Status) VALUES (@marca, @modelo, @ano, @numero, @status); SELECT SCOPE_IDENTITY()",
-                           connection))
-                {
-                    cmd.Parameters.AddWithValue("@marca", bicicleta.marca);
-                    cmd.Parameters.AddWithValue("@modelo", bicicleta.modelo);
-                    cmd.Parameters.AddWithValue("@ano", bicicleta.ano);
-                    cmd.Parameters.AddWithValue("@numero", bicicleta.numero);
-                    cmd.Parameters.AddWithValue("@status", bicicleta.status);
+            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
-                    var id = await cmd.ExecuteScalarAsync();
-                    return new Bicicleta
-                    {
-                        Id = (int)(id ?? 0),
-                        Marca = bicicleta.marca,
-                        Modelo = bicicleta.modelo,
-                        Ano = bicicleta.ano,
-                        Numero = bicicleta.numero,
-                        Status = bicicleta.status
-                    };
-                }
+            if (bicicletas != null)
+            {
+                var newBicicleta = new Bicicleta
+                {
+                    Id = bicicletas.Count + 1,
+                    Marca = bicicleta.Marca,
+                    Modelo = bicicleta.Modelo,
+                    Ano = bicicleta.Ano,
+                    Numero = bicicleta.Numero,
+                    Status = bicicleta.Status
+                };
+
+                bicicletas.Add(newBicicleta);
+                var updatedJsonData =
+                    JsonConvert.SerializeObject(bicicletas, (Newtonsoft.Json.Formatting)Formatting.Indented);
+                File.WriteAllText("mock_bicicletas.json", updatedJsonData);
+                return Task.FromResult(newBicicleta);
             }
+
+            throw new InvalidOperationException();
         }
 
-        public async Task<Bicicleta> Update(int id, NovaBicicletaRequest bicicleta)
+
+        public Task<Bicicleta> Update(int id, NovaBicicletaRequest bicicleta)
         {
-            var bicicletaAtual = await Get(id);
-            using (var connection = new SqlConnection(_connectionString))
+            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
+
+            if (bicicletas != null)
             {
-                await connection.OpenAsync();
-                using (var cmd = new SqlCommand(
-                           "UPDATE Bicicletas SET Marca = @marca, Modelo = @modelo, Ano = @ano, Numero = @numero, Status = @status WHERE Id = @id",
-                           connection))
+                var bike = bicicletas.FirstOrDefault(b => b.Id == id);
+                if (bike != null)
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.Parameters.AddWithValue("@marca", bicicleta.marca);
-                    cmd.Parameters.AddWithValue("@modelo", bicicleta.modelo);
-                    cmd.Parameters.AddWithValue("@ano", bicicleta.ano);
-                    cmd.Parameters.AddWithValue("@numero", bicicleta.numero);
-                    cmd.Parameters.AddWithValue("@status", bicicleta.status);
+                    bike.Marca = bike.Marca;
+                    bike.Modelo = bike.Modelo;
+                    bike.Ano = bike.Ano;
+                    bike.Numero = bike.Numero;
+                    bike.Status = bike.Status;
 
-
-                    await cmd.ExecuteNonQueryAsync();
+                    var updatedJsonData =
+                        JsonConvert.SerializeObject(bicicletas, (Newtonsoft.Json.Formatting)Formatting.Indented);
+                    File.WriteAllText("mock_bicicletas.json", updatedJsonData);
+                    return Task.FromResult(bike);
                 }
             }
+            else throw new BicicletaNaoEncontradaException(id);
 
-            return bicicletaAtual;
+            throw new InvalidOperationException();
         }
 
-        public async Task<Bicicleta> Delete(int id)
+
+        public Task<Bicicleta> Delete(int id)
         {
-            var bicicleta = await Get(id);
+            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
-            using (var connection = new SqlConnection(_connectionString))
+            if (bicicletas != null)
             {
-                await connection.OpenAsync();
-                using (var cmd = new SqlCommand("DELETE FROM Bicicletas WHERE Id = @id", connection))
+                var bicicleta = bicicletas.FirstOrDefault(b => b.Id == id);
+                if (bicicleta != null)
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
-
-                    await cmd.ExecuteNonQueryAsync();
+                    bicicletas.Remove(bicicleta);
+                    var updatedJsonData =
+                        JsonConvert.SerializeObject(bicicletas, (Newtonsoft.Json.Formatting)Formatting.Indented);
+                    File.WriteAllText("mock_bicicletas.json", updatedJsonData);
+                    return Task.FromResult(bicicleta);
                 }
             }
+            else throw new BicicletaNaoEncontradaException(id);
 
-            return bicicleta;
+            throw new InvalidOperationException();
         }
 
         public async Task<Bicicleta> IntegrarNaRede(int idTotem, int idBicicleta, int idFuncionario)
@@ -165,11 +141,9 @@ namespace bicicletario.Infrastructure.Repositories
             if (tranca.Status != TrancaStatus.OCUPADA)
                 throw new TrancaNaoDisponivelException(idTotem);
 
-            bicicleta.Status = BicicletaStatus.DISPONIVEL;
             tranca.Status = TrancaStatus.LIVRE;
 
-            // await Update(bicicleta.Id, bicicleta);
-
+            await AtualizarStatus(bicicleta.Id, BicicletaStatus.DISPONIVEL);
             return bicicleta;
         }
 
@@ -183,68 +157,62 @@ namespace bicicletario.Infrastructure.Repositories
                 throw new BicicletaNaoEncontradaException(idBicicleta);
             if (tranca == null)
                 throw new TrancaNaoEncontradaException(idTranca);
-
             if (bicicleta.Status != BicicletaStatus.DISPONIVEL)
-                throw new BicicletaNaoDisponivelException(idTranca);
+                throw new BicicletaNaoDisponivelException(idBicicleta);
 
             if (tranca.Status != TrancaStatus.LIVRE)
-                throw new TrancaNaoDisponivelException(idBicicleta);
+                throw new TrancaNaoDisponivelException(idTranca);
 
-            bicicleta.Status = BicicletaStatus.EM_USO;
             tranca.Status = TrancaStatus.OCUPADA;
 
-            /*await Update(bicicleta.Id, bicicleta);*/
-            await _trancaRepository.UpdateBicicleta(tranca.Id, tranca);
-
+            await AtualizarStatus(bicicleta.Id, BicicletaStatus.EM_USO);
             return bicicleta;
         }
 
-        public async Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status)
+        public async Task<Bicicleta?> AtualizarStatus(int id, BicicletaStatus status)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            // Ler o arquivo JSON
+            var jsonData = await File.ReadAllTextAsync("mock_bicicletas.json");
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
+
+            // Encontrar a bicicleta pelo ID e atualizar o status
+            if (bicicletas != null)
             {
-                var bicicleta = await Get(id);
+                var bicicleta = bicicletas.FirstOrDefault(b => b.Id == id);
+                if (bicicleta != null)
+                {
+                    bicicleta.Status = status;
 
-                if (bicicleta == null)
-                    throw new BicicletaNaoEncontradaException(id);
+                    // Salvar as alterações de volta no arquivo JSON
+                    var updatedJsonData =
+                        JsonConvert.SerializeObject(bicicletas, (Newtonsoft.Json.Formatting)Formatting.Indented);
+                    await File.WriteAllTextAsync("mock_bicicletas.json", updatedJsonData);
 
-                bicicleta.Status = status;
-
-                /*await Update(bicicleta.Id, bicicleta);*/
-
-                return bicicleta;
+                    return bicicleta;
+                }
             }
+            else throw new BicicletaNaoEncontradaException(id);
+
+            throw new InvalidOperationException();
         }
 
 
         public async Task<Bicicleta> ObterBicicletaPorNumero(int numero)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                using (var cmd = new SqlCommand("SELECT * FROM Bicicletas WHERE Numero = @numero", connection))
-                {
-                    cmd.Parameters.AddWithValue("@numero", numero);
+            var jsonData = await File.ReadAllTextAsync("mock_bicicletas.json");
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return new Bicicleta
-                            {
-                                Id = reader.GetInt32(0),
-                                Modelo = reader.GetString(1),
-                                Marca = reader.GetString(2),
-                                Ano = reader.GetInt32(3).ToString(),
-                                Numero = reader.GetInt32(4),
-                                Status = (BicicletaStatus)reader.GetInt32(5)
-                            };
-                        }
-                    }
+            if (bicicletas != null)
+            {
+                var bicicleta = bicicletas.FirstOrDefault(b => b.Numero == numero);
+                if (bicicleta != null)
+                {
+                    return bicicleta;
                 }
             }
+            else throw new BicicletaNaoEncontradaException(numero);
 
-            return null!;
+            throw new InvalidOperationException();
         }
     }
 }

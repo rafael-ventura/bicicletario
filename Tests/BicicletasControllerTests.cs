@@ -1,10 +1,8 @@
-using System.Threading.Tasks;
 using bicicletario.Application.Interfaces;
 using bicicletario.Domain.Models;
 using bicicletario.WebAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
 
 namespace bicicletario.Tests
 {
@@ -46,11 +44,12 @@ namespace bicicletario.Tests
         }
         
         [Fact]
-        public async Task GetAll_ReturnsOkResult_WithListOfBicicletas()
+        public Task GetAll_ReturnsOkResult_WithListOfBicicletas()
         {
             // Arrange
             var mockService = new Mock<IBicicletaService>();
             var testBicicleta = new Bicicleta { Id = 1, Modelo = "Modelo", Marca = "Marca", Ano = "2021", Numero = 1, Status = BicicletaStatus.NOVA };
+            return Task.CompletedTask;
         }
 
     }

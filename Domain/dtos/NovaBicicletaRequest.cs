@@ -4,13 +4,13 @@ namespace bicicletario.Domain.dtos;
 
 public record NovaBicicletaRequest
 {
-    public string marca { get; set; }
+    public string Marca { get; set; } = null!;
     
-    public string modelo { get; set; }
+    public string Modelo { get; set; } = null!;
     
-    public string ano { get; set; }
+    public string Ano { get; set; } = null!;
     
-    public int numero { get; set; }
+    public int Numero { get; set; } = 0;
     
-    public BicicletaStatus status { get; set; }
+    public BicicletaStatus Status { get; set; } = BicicletaStatus.DISPONIVEL;
 }

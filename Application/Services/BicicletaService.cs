@@ -30,15 +30,11 @@ public class BicicletaService : IBicicletaService
         return bicicleta;
     }
 
-    public Task<IEnumerable<Bicicleta>> ObterTodasBicicletas()
+    public Task<List<Bicicleta>> ObterTodasBicicletas()
     {
         var bicicletas = _bicicletaRepository.GetAll();
 
-        var obterTodasBicicletas = bicicletas as Bicicleta[] ?? bicicletas.ToArray();
-        if (bicicletas == null || !obterTodasBicicletas.Any())
-            throw new BicicletaNaoEncontradaException();
-
-        return Task.FromResult<IEnumerable<Bicicleta>>(obterTodasBicicletas);
+        return Task.FromResult(bicicletas);
     }
 
     public Task<Bicicleta> CriarBicicleta(NovaBicicletaRequest bicicleta)
@@ -55,7 +51,7 @@ public class BicicletaService : IBicicletaService
         return bicicletaIntegrada;
     }
 
-    
+
     public Task<Bicicleta> AtualizarBicicleta(int id, NovaBicicletaRequest bicicleta)
     {
         var bicicletaAtualizada = _bicicletaRepository.Update(id, bicicleta);
@@ -70,14 +66,13 @@ public class BicicletaService : IBicicletaService
 
         if (bicicletaRemovida == null)
             throw new BicicletaNaoEncontradaException(id);
-        
+
         return true;
     }
 
     public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
         string statusAcaoReparador)
     {
-
         var bicicleta = _bicicletaRepository.Get(idBicicleta);
         var tranca = _trancaRepository.Get(idTranca);
 
@@ -88,7 +83,7 @@ public class BicicletaService : IBicicletaService
     }
 
     // metodo para atualizar status
-    public Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status)
+    public Task<Bicicleta?> AtualizarStatus(int id, BicicletaStatus status)
     {
         var bicicletaAtualizada = _bicicletaRepository.AtualizarStatus(id, status);
 

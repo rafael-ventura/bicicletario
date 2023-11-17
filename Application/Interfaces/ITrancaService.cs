@@ -5,7 +5,7 @@ namespace bicicletario.Application.Interfaces;
 
 public interface ITrancaService
 {
-    public Task<IEnumerable<Tranca>> ObterTodasTrancas();
+    public Task<List<Tranca>> ObterTodasTrancas();
     public Task<Tranca> ObterTrancaPorId(int id);
     public Task<Tranca> IncluirTranca(NovaTrancaRequest novaTrancaRequest);
     public Task<Tranca> AtualizarTranca(int id, Tranca trancaAtualizada);

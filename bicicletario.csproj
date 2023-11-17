@@ -15,6 +15,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
     <PackageReference Include="Moq" Version="4.20.69" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     
@@ -38,6 +39,10 @@
     <_ContentIncludedByDefault Remove="Infrastructure\obj\project.packagespec.json" />
     <_ContentIncludedByDefault Remove="Tests\obj\project.packagespec.json" />
     <_ContentIncludedByDefault Remove="WebAPI\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="WebAPI\bin\Debug\net7.0\WebAPI.deps.json" />
+    <_ContentIncludedByDefault Remove="Tests\bin\Debug\net7.0\Tests.deps.json" />
+    <_ContentIncludedByDefault Remove="Tests\bin\Debug\net7.0\Tests.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="Infrastructure\bin\Debug\net7.0\Infrastructure.deps.json" />
   </ItemGroup>
 
 </Project>

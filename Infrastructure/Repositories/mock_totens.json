@@ -1,0 +1,12 @@
+[
+  {
+    "Id": 1,
+    "Localizacao": "Parque Central",
+    "Descricao": "Totem perto da entrada principal"
+  },
+  {
+    "Id": 2,
+    "Localizacao": "Universidade XY",
+    "Descricao": "Totem ao lado da biblioteca"
+  }
+]

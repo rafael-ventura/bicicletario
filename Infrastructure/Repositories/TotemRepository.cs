@@ -1,179 +1,167 @@
 using bicicletario.Domain.dtos;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
-using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace bicicletario.Infrastructure.Repositories;
 
 public class TotemRepository : ITotemRepository
 {
-    private readonly string _connectionString;
     private readonly ITrancaRepository _trancaRepository;
 
-    public TotemRepository(string connectionString, ITrancaRepository trancaRepository)
+    public TotemRepository(ITrancaRepository trancaRepository)
     {
-        _connectionString = connectionString;
         _trancaRepository = trancaRepository;
     }
 
-    public async Task<IEnumerable<Totem>> ObterTodosTotens()
+    public async Task<List<Totem>> ObterTodosTotens()
     {
-        var totens = new List<Totem>();
-        using (var connection = new SqlConnection(_connectionString))
+        var jsonData = File.ReadAllText("mock_totens.json");
+        var totens = JsonConvert.DeserializeObject<List<Totem>>(jsonData);
+
+        if (totens != null)
         {
-            await connection.OpenAsync();
-            using (var cmd = new SqlCommand("SELECT * FROM Totens", connection))
+            return totens;
+        }
+
+        throw new InvalidOperationException();
+    }
+
+    public Task<Totem> ObterTotemPorId(int idTotem)
+    {
+        var json = File.ReadAllText("mock_totens.json");
+        var totens = JsonConvert.DeserializeObject<List<Totem>>(json);
+
+        var totem = new Totem();
+
+        if (totens != null)
+            foreach (var t in totens)
             {
-                var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+                if (t.Id == idTotem)
                 {
-                    var totem = new Totem
-                    {
-                        Id = (int)reader["Id"],
-                        Localizacao = (string)reader["Localizacao"],
-                        Descricao = (string)reader["Descricao"]
-                    };
-                    totens.Add(totem);
+                    totem = t;
                 }
             }
-        }
 
-        return totens;
+        return Task.FromResult(totem);
     }
 
-    public async Task<Totem> ObterTotemPorId(int idTotem)
+    public Task<Totem> IncluirTotem(NovoTotemRequest novoTotemRequest)
     {
-        using (var connection = new SqlConnection(_connectionString))
+        var totem = new Totem
         {
-            await connection.OpenAsync();
-            using (var cmd = new SqlCommand("SELECT * FROM Totens WHERE Id = @numero", connection))
+            Localizacao = novoTotemRequest.localizacao,
+            Descricao = novoTotemRequest.descricao
+        };
+
+        var json = File.ReadAllText("mock_totens.json");
+
+        var totens = JsonConvert.DeserializeObject<List<Totem>>(json);
+
+        totens?.Add(totem);
+
+        var updatedJsonData =
+            JsonConvert.SerializeObject(totens, Formatting.Indented);
+
+        File.WriteAllText("mock_totens.json", updatedJsonData);
+
+        return Task.FromResult(totem);
+    }
+
+    public Task<Totem> EditarTotem(int idTotem, Totem totemAtualizado)
+    {
+        var json = File.ReadAllText("mock_totens.json");
+
+        var totens = JsonConvert.DeserializeObject<List<Totem>>(json);
+
+        var totemEditado = new Totem();
+
+        if (totens != null)
+            foreach (var totem in totens)
             {
-                cmd.Parameters.AddWithValue("@numero", idTotem);
-                var reader = await cmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
+                if (totem.Id == idTotem)
                 {
-                    var totem = new Totem
-                    {
-                        Id = (int)reader["Id"],
-                        Localizacao = (string)reader["Localizacao"],
-                        Descricao = (string)reader["Descricao"]
-                    };
-                    return totem;
+                    totemEditado = totem;
                 }
             }
-        }
 
-        return null!;
+        totens?.Remove(totemEditado);
+
+        var updatedJsonData =
+            JsonConvert.SerializeObject(totens, Formatting.Indented);
+
+        File.WriteAllText("mock_totens.json", updatedJsonData);
+
+        return Task.FromResult(totemAtualizado);
     }
 
-    public async Task<Totem> IncluirTotem(NovoTotemRequest novoTotemRequest)
+    public Task<Totem> RemoverTotem(int idTotem)
     {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            await connection.OpenAsync();
-            using (var cmd = new SqlCommand("INSERT INTO Totens (Localizacao, Descricao) VALUES (@toten, @status)",
-                       connection))
+        var json = File.ReadAllText("mock_totens.json");
+        var totens = JsonConvert.DeserializeObject<List<Totem>>(json);
+
+        var totemRemovido = new Totem();
+
+        if (totens != null)
+            foreach (var totem in totens)
             {
-                cmd.Parameters.AddWithValue("@localizacao", novoTotemRequest.localizacao);
-                cmd.Parameters.AddWithValue("@status", novoTotemRequest.descricao);
-
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        return null!;
-    }
-
-    public async Task<Totem> EditarTotem(int idTotem, Totem totemAtualizado)
-    {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            await connection.OpenAsync();
-            using (var cmd = new SqlCommand(
-                       "UPDATE Totens SET Localizacao = @localizacao, Descricao = @descricao WHERE Id = @numero",
-                       connection))
-            {
-                cmd.Parameters.AddWithValue("@localizacao", totemAtualizado.Localizacao);
-                cmd.Parameters.AddWithValue("@descricao", totemAtualizado.Descricao);
-                cmd.Parameters.AddWithValue("@numero", idTotem);
-
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        return null!;
-    }
-
-    public async Task<Totem> RemoverTotem(int idTotem)
-    {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            await connection.OpenAsync();
-            using (var cmd = new SqlCommand("DELETE FROM Totens WHERE Id = @numero", connection))
-            {
-                cmd.Parameters.AddWithValue("@numero", idTotem);
-
-                await cmd.ExecuteNonQueryAsync();
-            }
-        }
-
-        return null!;
-    }
-
-    public async Task<IEnumerable<Tranca>> ListarTrancasDoTotem(int idTotem)
-    {
-        var trancas = new List<Tranca>();
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            await connection.OpenAsync();
-            using (var cmd = new SqlCommand("SELECT * FROM Trancas WHERE IdTotem = @numero", connection))
-            {
-                cmd.Parameters.AddWithValue("@numero", idTotem);
-                var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+                if (totem.Id == idTotem)
                 {
-                    var tranca = new Tranca
-                    {
-                        Id = (int)reader["Id"],
-                        Numero = (int)reader["Numero"],
-                        Localizacao = (string)reader["Localizacao"],
-                        AnoDeFabricacao = (string)reader["AnoDeFabricacao"],
-                        Modelo = (string)reader["Modelo"],
-                        Status = (TrancaStatus)reader["Status"]
-                    };
-                    trancas.Add(tranca);
+                    totemRemovido = totem;
                 }
             }
-        }
 
-        return trancas;
+        totens?.Remove(totemRemovido);
+
+        var updatedJsonData =
+            JsonConvert.SerializeObject(totens, Formatting.Indented);
+
+        File.WriteAllText("mock_totens.json", updatedJsonData);
+
+        return Task.FromResult(totemRemovido);
     }
 
-    public async Task<IEnumerable<Bicicleta>> ListarBicicletasDoTotem(int idTotem)
+    public Task<List<Tranca>> ListarTrancasDoTotem(int idTotem)
     {
-        var bicicletas = new List<Bicicleta>();
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            await connection.OpenAsync();
-            using (var cmd = new SqlCommand("SELECT * FROM Bicicletas WHERE IdTotem = @numero", connection))
+        var json = File.ReadAllText("mock_trancas.json");
+        var trancas = JsonConvert.DeserializeObject<List<Tranca>>(json);
+
+        var trancasDoTotem = new List<Tranca>();
+
+        if (trancas != null)
+            foreach (var tranca in trancas)
             {
-                cmd.Parameters.AddWithValue("@numero", idTotem);
-                var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+                if (tranca.Id == idTotem)
                 {
-                    var bicicleta = new Bicicleta
-                    {
-                        Id = (int)reader["Id"],
-                        Marca = (string)reader["Marca"],
-                        Modelo = (string)reader["Modelo"],
-                        Ano = (string)reader["Ano"],
-                        Status = (BicicletaStatus)reader["Status"]
-                    };
-                    bicicletas.Add(bicicleta);
+                    trancasDoTotem.Add(tranca);
                 }
             }
-        }
 
-        return bicicletas;
+        return Task.FromResult(trancasDoTotem);
+    }
+
+    public async Task<List<Bicicleta>> ListarBicicletasDoTotem(int idTotem)
+    {
+        var json = File.ReadAllText("mock_bicicletas.json");
+        var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(json);
+
+        var trancas = await _trancaRepository.GetAll();
+
+        var bicicletasDoTotem = new List<Bicicleta>();
+
+        if (bicicletas != null)
+            foreach (var bicicleta in bicicletas)
+            {
+                var enumerable = trancas.ToList();
+                foreach (var tranca in enumerable)
+                {
+                    if (bicicleta.Id == tranca.BicicletaId && tranca.BicicletaId == idTotem)
+                    {
+                        bicicletasDoTotem.Add(bicicleta);
+                    }
+                }
+            }
+
+        return bicicletasDoTotem;
     }
 }

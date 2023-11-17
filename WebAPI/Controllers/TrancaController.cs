@@ -138,12 +138,7 @@ public class TrancaController : ControllerBase
             return UnprocessableEntity(new { mensagem = ex.Message });
         }
     }
-
-    // code 200 : msg- Ação bem sucedida
-
-    // code 404 : msg- Não encontrado
-
-    // code 422 : msg- Dados inválidos
+    
     // PUT: /tranca/{idTranca}/status
     [HttpPut("{idTranca}/status/{acao}")]
     public async Task<IActionResult> AtualizarStatus(int idTranca, [FromRoute] AcaoEnum acao)
