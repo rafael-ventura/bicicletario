@@ -14,7 +14,6 @@ public class DevolucaoController : ControllerBase
         _devolucaoService = devolucaoService;
     }
 
-    
 
     // POST: /devolucao
     [HttpPost]
