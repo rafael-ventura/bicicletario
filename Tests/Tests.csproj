@@ -34,7 +34,6 @@
         <ProjectReference Include="..\Application\Application.csproj"/>
         <ProjectReference Include="..\WebAPI\WebAPI.csproj"/>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </ItemGroup>
 
 </Project>
