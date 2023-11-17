@@ -25,11 +25,6 @@ jobs:
           rm -rf $(Build.SourcesDirectory)/**/obj/
         displayName: 'Clean bin and obj folders'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Restore NuGet packages'
-        inputs:
-          command: 'restore'
-          projects: 'api.sln'
 
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
