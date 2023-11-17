@@ -30,14 +30,14 @@ jobs:
         displayName: 'Build solution'
         inputs:
           command: 'build'
-          projects: 'api.sln'
+          projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
 
       - task: DotNetCoreCLI@2
         displayName: 'Test solution'
         inputs:
           command: 'test'
-          projects: 'api.sln'
+          projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
 
       # Step to prepare SonarCloud analysis
@@ -65,7 +65,7 @@ jobs:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'publish'
-          projects: 'api.sln'
+          projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration) --output publish_output'
         displayName: 'Publish project'
 
