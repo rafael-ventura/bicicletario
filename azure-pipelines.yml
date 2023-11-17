@@ -21,28 +21,23 @@ jobs:
           installationPath: $(Agent.ToolsDirectory)/dotnet
 
       - script: |
-          find . -name 'bin' -type d -exec rm -rf {} +
-          find . -name 'obj' -type d -exec rm -rf {} +
+          rm -rf $(Build.SourcesDirectory)/**/bin/
+          rm -rf $(Build.SourcesDirectory)/**/obj/
         displayName: 'Clean bin and obj folders'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Restore NuGet packages'
-        inputs:
-          command: 'restore'
-          projects: '**/*.csproj'
 
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:
-          command: build
+          command: 'build'
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
 
       - task: DotNetCoreCLI@2
         displayName: 'Test solution'
         inputs:
-          command: test
-          projects: '**/*Tests/*.csproj'
+          command: 'test'
+          projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
 
       # Step to prepare SonarCloud analysis
