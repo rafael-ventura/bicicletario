@@ -7,12 +7,10 @@ namespace bicicletario.WebAPI.Controllers;
 
 public class AluguelController : ControllerBase
 {
-    private readonly ILogger<AluguelController> _logger;
     private readonly IAluguelService _aluguelService;
 
-    public AluguelController(ILogger<AluguelController> logger, IAluguelService aluguelService)
+    public AluguelController(IAluguelService aluguelService)
     {
-        _logger = logger;
         _aluguelService = aluguelService;
     }
 
@@ -31,6 +29,4 @@ public class AluguelController : ControllerBase
             throw new ApiException(e.Message, e.StatusCode);
         }
     }
-    
-
 }
