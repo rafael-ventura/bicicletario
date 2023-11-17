@@ -34,8 +34,7 @@ jobs:
       - task: DotNetCoreCLI@2
         displayName: 'Clean solution'
         inputs:
-          command: 'run'
-          custom: 'clean'
+          command: clean
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
           
