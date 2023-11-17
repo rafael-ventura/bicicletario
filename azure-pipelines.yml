@@ -26,19 +26,19 @@ jobs:
         displayName: 'Clean bin and obj folders'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Restore solution'
+        inputs:
+          command: restore
+          projects: '**/*.csproj'
+
+      - task: DotNetCoreCLI@2
         displayName: 'Clean solution'
         inputs:
           command: 'run'
           custom: 'clean'
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Restore solution'
-        inputs:
-          command: restore
-          projects: '**/*.csproj'
-
+          
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:
