@@ -7,8 +7,8 @@ using bicicletario.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+builder.Services.AddScoped<IAluguelService, AluguelService>();
+builder.Services.AddScoped<IDevolucaoService, DevolucaoService>();
 
 
 builder.Services.AddControllers();
