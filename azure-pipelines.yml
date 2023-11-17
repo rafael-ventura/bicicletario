@@ -26,9 +26,9 @@ jobs:
         displayName: 'Clean bin and obj folders'
 
       - task: DotNetCoreCLI@2
-        displayName: 'Restore solution'
+        displayName: 'Restore NuGet packages'
         inputs:
-          command: restore
+          command: 'restore'
           projects: '**/*.csproj'
 
       - task: DotNetCoreCLI@2
