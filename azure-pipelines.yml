@@ -1,10 +1,14 @@
 name: CI
+
 trigger:
   - main
+
 pool:
   vmImage: ubuntu-latest
+
 variables:
   buildConfiguration: 'Release'
+
 jobs:
   - job: BuildTestAnalyzeDeploy
     displayName: 'Build, Test, Analyze and Deploy'
@@ -16,18 +20,15 @@ jobs:
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
 
-          
-          displayName: 'Clean bin and obj folders'
       - script: |
           find . -name 'bin' -type d -exec rm -rf {} +
           find . -name 'obj' -type d -exec rm -rf {} +
-              
-          
-          - task: DotNetCoreCLI@2
+        displayName: 'Clean bin and obj folders'
+
+      - task: DotNetCoreCLI@2
         displayName: 'Clean solution'
         inputs:
-          command: 'run'
-          custom: 'clean'
+          command: 'clean'
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
 
@@ -51,10 +52,10 @@ jobs:
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
 
-      # Passo para preparar a análise SonarCloud
+      # Step to prepare SonarCloud analysis
       - task: SonarCloudPrepare@1
         inputs:
-          SonarCloud: 'bike'
+          SonarCloud: 'SonarCloud'
           organization: 'rafaelventura'
           scannerMode: 'MSBuild'
           projectKey: 'rafael-ventura_bicicletario'
@@ -64,15 +65,15 @@ jobs:
             sonar.coverage.exclusions="**Tests*.cs"
             sonar.login="9970105f3d9489edff4656f4b71b702442066822"
 
-      # Passo para análise SonarCloud
+      # Step to analyze with SonarCloud
       - task: SonarCloudAnalyze@1
 
-      # Passo para publicar os resultados da análise SonarCloud
+      # Step to publish the SonarCloud analysis results
       - task: SonarCloudPublish@1
         inputs:
           pollingTimeoutSec: '300'
 
-      # Publicando o projeto
+      # Publishing the project
       - task: DotNetCoreCLI@2
         inputs:
           command: 'publish'
