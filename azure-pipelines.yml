@@ -16,12 +16,14 @@ jobs:
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
 
+          
+          displayName: 'Clean bin and obj folders'
       - script: |
           find . -name 'bin' -type d -exec rm -rf {} +
           find . -name 'obj' -type d -exec rm -rf {} +
-            displayName: 'Clean bin and obj folders'
-
-      - task: DotNetCoreCLI@2
+              
+          
+          - task: DotNetCoreCLI@2
         displayName: 'Clean solution'
         inputs:
           command: 'run'
