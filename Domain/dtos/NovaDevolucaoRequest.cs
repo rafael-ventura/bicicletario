@@ -2,7 +2,7 @@
 
 public record NovaDevolucaoRequest
 {
-    public int IdCiclista { get; set; }
+    public int IdTranca { get; set; }
     
-    public int TrancaFim { get; set; }
+    public int IdBicicleta { get; set; }
 }
