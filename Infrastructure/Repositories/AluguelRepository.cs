@@ -13,7 +13,7 @@ public class AluguelRepository
     {
         var aluguel = new Aluguel
         {
-            CiclistaId = request.idCiclista,
+            CiclistaId = request.IdCiclista,
             TrancaInicioId = request.TrancaInicioId
         };
 

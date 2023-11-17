@@ -9,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<IAluguelService, AluguelService>();
 builder.Services.AddScoped<IDevolucaoService, DevolucaoService>();
+builder.Services.AddScoped<IBicicletaService, BicicletaService>();
+builder.Services.AddScoped<ITotemService, TotemService>();
+builder.Services.AddScoped<ITrancaService, TrancaService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 
 builder.Services.AddControllers();

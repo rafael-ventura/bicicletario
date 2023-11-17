@@ -1,3 +1,5 @@
+using bicicletario.Domain.Models;
+
 namespace bicicletario.Domain.dtos;
 
 public record RetirarDaRedeRequest

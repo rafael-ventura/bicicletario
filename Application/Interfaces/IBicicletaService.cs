@@ -20,7 +20,7 @@ public interface IBicicletaService
     
     public Task<Bicicleta> AtualizarBicicleta(int id, NovaBicicletaRequest bicicleta);
     
-    public Task<Bicicleta?> AtualizarStatus(int id, BicicletaStatus status);
+    public Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status);
     
     public Task<Bicicleta> ObterBicicletaPorNumero(int numero);
     

@@ -49,11 +49,11 @@ public class TrancaRepository : ITrancaRepository
             var tranca = new Tranca
             {
                 Id = trancas.Count + 1,
-                Numero = novaTrancaRequest.numero,
-                Localizacao = novaTrancaRequest.localizacao,
-                AnoDeFabricacao = novaTrancaRequest.anoDeFabricacao,
-                Modelo = novaTrancaRequest.modelo,
-                Status = novaTrancaRequest.status
+                Numero = novaTrancaRequest.Numero,
+                Localizacao = novaTrancaRequest.Localizacao,
+                AnoDeFabricacao = novaTrancaRequest.AnoDeFabricacao,
+                Modelo = novaTrancaRequest.Modelo,
+                Status = novaTrancaRequest.Status
             };
 
             trancas.Add(tranca);

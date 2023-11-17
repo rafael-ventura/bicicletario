@@ -14,14 +14,14 @@ public class TotemRepository : ITotemRepository
         _trancaRepository = trancaRepository;
     }
 
-    public async Task<List<Totem>> ObterTodosTotens()
+    public Task<List<Totem>> ObterTodosTotens()
     {
         var jsonData = File.ReadAllText("mock_totens.json");
         var totens = JsonConvert.DeserializeObject<List<Totem>>(jsonData);
 
         if (totens != null)
         {
-            return totens;
+            return Task.FromResult(totens);
         }
 
         throw new InvalidOperationException();
@@ -50,8 +50,8 @@ public class TotemRepository : ITotemRepository
     {
         var totem = new Totem
         {
-            Localizacao = novoTotemRequest.localizacao,
-            Descricao = novoTotemRequest.descricao
+            Localizacao = novoTotemRequest.Localizacao,
+            Descricao = novoTotemRequest.Descricao
         };
 
         var json = File.ReadAllText("mock_totens.json");

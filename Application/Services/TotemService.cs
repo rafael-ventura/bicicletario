@@ -68,7 +68,7 @@ public class TotemService : ITotemService
         return trancas;
     }
     
-    public Task<List<Bicicleta> > ListarBicicletasDoTotem(int idTotem)
+    public Task<List<Bicicleta>> ListarBicicletasDoTotem(int idTotem)
     {
         var bicicletas = _totemRepository.ListarBicicletasDoTotem(idTotem);
         

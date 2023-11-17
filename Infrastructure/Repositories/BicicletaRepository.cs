@@ -169,7 +169,7 @@ namespace bicicletario.Infrastructure.Repositories
             return bicicleta;
         }
 
-        public async Task<Bicicleta?> AtualizarStatus(int id, BicicletaStatus status)
+        public async Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status)
         {
             // Ler o arquivo JSON
             var jsonData = await File.ReadAllTextAsync("mock_bicicletas.json");

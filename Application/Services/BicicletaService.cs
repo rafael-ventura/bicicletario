@@ -83,7 +83,7 @@ public class BicicletaService : IBicicletaService
     }
 
     // metodo para atualizar status
-    public Task<Bicicleta?> AtualizarStatus(int id, BicicletaStatus status)
+    public Task<Bicicleta> AtualizarStatus(int id, BicicletaStatus status)
     {
         var bicicletaAtualizada = _bicicletaRepository.AtualizarStatus(id, status);
 

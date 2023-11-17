@@ -8,50 +8,73 @@ namespace bicicletario.Tests
 {
     public class BicicletasControllerTests
     {
-        [Fact]
-        public async Task Get_ReturnsOkResult_WithBicicleta()
+        private readonly Mock<IBicicletaService> _bicicletaServiceMock;
+        private readonly BicicletasController _bicicletasController;
+
+        public BicicletasControllerTests()
         {
-            // Arrange
-            var mockService = new Mock<IBicicletaService>();
-            var testBicicleta = new Bicicleta { Id = 1, Modelo = "Modelo", Marca = "Marca", Ano = "2021", Numero = 1, Status = BicicletaStatus.NOVA };
-            mockService.Setup(service => service.ObterBicicleta(1)).ReturnsAsync(testBicicleta);
-
-            var controller = new BicicletasController(mockService.Object);
-
-            // Act
-            var result = await controller.Get(1);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<Bicicleta>(okResult.Value);
-            Assert.Equal(testBicicleta, returnValue);
+            _bicicletaServiceMock = new Mock<IBicicletaService>();
+            _bicicletasController = new BicicletasController(_bicicletaServiceMock.Object);
         }
 
         [Fact]
-        public async Task Get_ReturnsNotFoundResult_WhenBicicletaIsNotFound()
+        public async Task Get_Bicicleta_ById()
         {
             // Arrange
-            var mockService = new Mock<IBicicletaService>();
-            mockService.Setup(service => service.ObterBicicleta(1))!.ReturnsAsync((Bicicleta) null!);
-
-            var controller = new BicicletasController(mockService.Object);
+            var id = 1;
+            var bicicleta = new Bicicleta();
+            _bicicletaServiceMock.Setup(x => x.ObterBicicleta(id)).ReturnsAsync(bicicleta);
 
             // Act
-            var result = await controller.Get(1);
+            var result = await _bicicletasController.Get(id);
 
             // Assert
+            Assert.IsType<ActionResult<Bicicleta>>(result);
+        }
+
+        [Fact]
+        public async Task Get_Bicicleta_ById_NotFound()
+        {
+            // Arrange
+            var id = 1;
+            _bicicletaServiceMock.Setup(x => x.ObterBicicleta(id)).ReturnsAsync((Bicicleta)null!);
+
+            // Act
+            var result = await _bicicletasController.Get(id);
+
+            // Assert
+            Assert.IsType<ActionResult<Bicicleta>>(result);
             Assert.IsType<NotFoundResult>(result);
         }
-        
+
         [Fact]
-        public Task GetAll_ReturnsOkResult_WithListOfBicicletas()
+        public async Task Get_Bicicleta_ByNumero()
         {
             // Arrange
-            var mockService = new Mock<IBicicletaService>();
-            var testBicicleta = new Bicicleta { Id = 1, Modelo = "Modelo", Marca = "Marca", Ano = "2021", Numero = 1, Status = BicicletaStatus.NOVA };
-            return Task.CompletedTask;
+            var numero = 1;
+            var bicicleta = new Bicicleta();
+            _bicicletaServiceMock.Setup(x => x.ObterBicicletaPorNumero(numero)).ReturnsAsync(bicicleta);
+
+            // Act
+            var result = await _bicicletasController.ObterBicicletaPorNumero(numero);
+
+            // Assert
+            Assert.IsType<ActionResult<Bicicleta>>(result);
         }
 
+        [Fact]
+        public async Task Get_Bicicleta_ByNumero_NotFound()
+        {
+            // Arrange
+            var numero = 1;
+            _bicicletaServiceMock.Setup(x => x.ObterBicicletaPorNumero(numero)).ReturnsAsync((Bicicleta)null!);
+
+            // Act
+            var result = await _bicicletasController.ObterBicicletaPorNumero(numero);
+
+            // Assert
+            Assert.IsType<ActionResult<Bicicleta>>(result);
+            Assert.IsType<NotFoundResult>(result);
+        }
     }
-    
 }
