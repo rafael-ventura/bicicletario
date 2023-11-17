@@ -30,7 +30,7 @@ public class DevolucaoController : ControllerBase
         try
         {
             var devolucao = await _devolucaoService.CriarDevolucao(novaDevolucaoRequest);
-            return CreatedAtAction(nameof(Devolver), new { id = devolucao.Id }, devolucao);
+            return CreatedAtAction(nameof(Devolver), new { id = devolucao.BicicletaId }, devolucao);
         }
         catch (ApiException e)
         {
