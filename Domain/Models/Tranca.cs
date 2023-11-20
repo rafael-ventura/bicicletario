@@ -2,17 +2,17 @@ namespace bicicletario.Domain.Models;
 
 public enum TrancaStatus
 {
-LIVRE, 
-OCUPADA, 
-NOVA, 
-APOSENTADA, 
-EM_REPARO
+Livre, 
+Ocupada, 
+Nova, 
+Aposentada, 
+EmReparo
 }
 
 public enum AcaoEnum
 {
-    TRANCAR,
-    DESTRANCAR
+    Trancar,
+    Destrancar
 }
 
 public class Tranca

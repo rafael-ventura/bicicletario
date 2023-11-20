@@ -9,11 +9,11 @@ namespace bicicletario.WebAPI.Controllers;
 // /bicicletas
 [ApiController]
 [Route("[controller]")]
-public class BicicletasController : ControllerBase
+public class BicicletaController : ControllerBase
 {
     private readonly IBicicletaService _bicicletaService;
 
-    public BicicletasController(IBicicletaService bicicletaService)
+    public BicicletaController(IBicicletaService bicicletaService)
     {
         _bicicletaService = bicicletaService;
     }
@@ -122,20 +122,12 @@ public class BicicletasController : ControllerBase
     {
         try
         {
-            var bicicletaIntegrada = await _bicicletaService.IntegrarNaRede(
-                bicicleta.IdTranca,
-                bicicleta.IdBicicleta,
-                bicicleta.IdFuncionario
-            );
+            var bicicletaIntegrada = await _bicicletaService.IntegrarNaRede(bicicleta);
             return Ok(new { mensagem = "Dados cadastrados.", bicicletaIntegrada });
         }
         catch (DadosInvalidosException)
         {
             return BadRequest(new { mensagem = "Dados inválidos." });
-        }
-        catch (BicicletaNaoEncontradaException)
-        {
-            return NotFound(new { mensagem = "Bicicleta não encontrada." });
         }
     }
 
@@ -144,12 +136,7 @@ public class BicicletasController : ControllerBase
     {
         try
         {
-            var bicicletaRemovida = await _bicicletaService.RetirarDaRede(
-                request.IdTranca,
-                request.IdBicicleta,
-                request.IdFuncionario,
-                request.StatusAcaoReparador
-            );
+            var bicicletaRemovida = await _bicicletaService.RetirarDaRede(request);
             return Ok(new { mensagem = "Bicicleta retirada da rede com sucesso.", bicicletaRemovida });
         }
         catch (BicicletaNaoEncontradaException)

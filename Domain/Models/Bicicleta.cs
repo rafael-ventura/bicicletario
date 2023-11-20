@@ -2,12 +2,12 @@
 
 public enum BicicletaStatus
 {
-    DISPONIVEL,
-    EM_USO,
-    NOVA,
-    APOSENTADA,
-    REPARO_SOLICITADO,
-    EM_REPARO
+    Disponivel,
+    EmUso,
+    Nova,
+    Aposentada,
+    ReparoSolicitado,
+    EmReparo
 }
 
 public class Bicicleta
@@ -15,7 +15,7 @@ public class Bicicleta
     public Bicicleta()
     {
         Ano = DateTime.Now.Year.ToString();
-        Status = BicicletaStatus.NOVA;
+        Status = BicicletaStatus.Nova;
     }
     
     public int Id { get; set; }

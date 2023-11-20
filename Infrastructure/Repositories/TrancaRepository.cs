@@ -128,7 +128,7 @@ public class TrancaRepository : ITrancaRepository
             var tranca = trancas.FirstOrDefault(t => t.Id == idTranca);
             if (tranca != null)
             {
-                tranca.Status = TrancaStatus.LIVRE;
+                tranca.Status = TrancaStatus.Livre;
                 return await Task.FromResult(tranca);
             }
         }
@@ -146,7 +146,7 @@ public class TrancaRepository : ITrancaRepository
             var tranca = trancas.FirstOrDefault(t => t.Id == idTranca);
             if (tranca != null)
             {
-                tranca.Status = TrancaStatus.OCUPADA;
+                tranca.Status = TrancaStatus.Ocupada;
                 return await Task.FromResult(tranca);
             }
         }
@@ -164,7 +164,7 @@ public class TrancaRepository : ITrancaRepository
             var tranca = trancas.FirstOrDefault(t => t.Id == idTranca);
             if (tranca != null)
             {
-                tranca.Status = status == AcaoEnum.TRANCAR ? TrancaStatus.OCUPADA : TrancaStatus.LIVRE;
+                tranca.Status = status == AcaoEnum.Trancar ? TrancaStatus.Ocupada : TrancaStatus.Livre;
                 return await Task.FromResult(tranca);
             }
         }
@@ -182,7 +182,7 @@ public class TrancaRepository : ITrancaRepository
             var tranca = trancas.FirstOrDefault(t => t.Id == idTranca);
             if (tranca != null)
             {
-                tranca.Status = TrancaStatus.OCUPADA;
+                tranca.Status = TrancaStatus.Ocupada;
                 return await Task.FromResult(tranca);
             }
         }
@@ -200,7 +200,7 @@ public class TrancaRepository : ITrancaRepository
             var tranca = trancas.FirstOrDefault(t => t.Id == idTranca);
             if (tranca != null)
             {
-                tranca.Status = TrancaStatus.LIVRE;
+                tranca.Status = TrancaStatus.Livre;
                 return await Task.FromResult(tranca);
             }
         }

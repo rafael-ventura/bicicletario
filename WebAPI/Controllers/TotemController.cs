@@ -45,12 +45,12 @@ public class TotemController : ControllerBase
     {
         try
         {
-            var totem = await _totemService.IncluirTotem(novoTotemRequest);
-            return CreatedAtAction(nameof(Create), new { id = totem.Id }, totem);
+            var totems = await _totemService.IncluirTotem(novoTotemRequest);
+            return Ok(new { mensagem = "Totem criado com sucesso.", totem = totems });
         }
-        catch (DadosInvalidosException ex)
+        catch (Exception ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return StatusCode(500, new { mensagem = "Erro ao criar totem.", erro = ex.Message });
         }
     }
 
@@ -130,5 +130,4 @@ public class TotemController : ControllerBase
             return StatusCode(500, new { mensagem = "Erro ao listar bicicletas do totem.", erro = ex.Message });
         }
     }
-
 }

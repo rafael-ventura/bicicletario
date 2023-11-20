@@ -36,7 +36,7 @@ public class TotemService : ITotemService
         return totem;
     }
     
-    public Task<Totem> IncluirTotem(NovoTotemRequest novoNovoTotemRequest)
+    public Task<List<Totem>> IncluirTotem(NovoTotemRequest novoNovoTotemRequest)
     {
         var totemCriado = _totemRepository.IncluirTotem(novoNovoTotemRequest);
         

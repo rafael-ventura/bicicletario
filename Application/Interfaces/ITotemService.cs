@@ -7,7 +7,7 @@ public interface ITotemService
 {
     public Task<List<Totem>> ObterTodosTotens();
 
-    public Task<Totem> IncluirTotem(NovoTotemRequest novoNovoTotemRequest);
+    public Task<List<Totem>> IncluirTotem(NovoTotemRequest novoNovoTotemRequest);
 
     public Task<Totem> EditarTotem(int id, Totem totemAtualizado);
 

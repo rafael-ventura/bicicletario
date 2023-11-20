@@ -9,12 +9,12 @@ namespace bicicletario.Tests
     public class BicicletasControllerTests
     {
         private readonly Mock<IBicicletaService> _bicicletaServiceMock;
-        private readonly BicicletasController _bicicletasController;
+        private readonly BicicletaController _bicicletaController;
 
         public BicicletasControllerTests()
         {
             _bicicletaServiceMock = new Mock<IBicicletaService>();
-            _bicicletasController = new BicicletasController(_bicicletaServiceMock.Object);
+            _bicicletaController = new BicicletaController(_bicicletaServiceMock.Object);
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace bicicletario.Tests
             _bicicletaServiceMock.Setup(x => x.ObterBicicleta(id)).ReturnsAsync(bicicleta);
 
             // Act
-            var result = await _bicicletasController.Get(id);
+            var result = await _bicicletaController.Get(id);
 
             // Assert
             Assert.IsType<ActionResult<Bicicleta>>(result);
@@ -40,7 +40,7 @@ namespace bicicletario.Tests
             _bicicletaServiceMock.Setup(x => x.ObterBicicleta(id)).ReturnsAsync((Bicicleta)null!);
 
             // Act
-            var result = await _bicicletasController.Get(id);
+            var result = await _bicicletaController.Get(id);
 
             // Assert
             Assert.IsType<ActionResult<Bicicleta>>(result);
@@ -56,7 +56,7 @@ namespace bicicletario.Tests
             _bicicletaServiceMock.Setup(x => x.ObterBicicletaPorNumero(numero)).ReturnsAsync(bicicleta);
 
             // Act
-            var result = await _bicicletasController.ObterBicicletaPorNumero(numero);
+            var result = await _bicicletaController.ObterBicicletaPorNumero(numero);
 
             // Assert
             Assert.IsType<ActionResult<Bicicleta>>(result);
@@ -70,7 +70,7 @@ namespace bicicletario.Tests
             _bicicletaServiceMock.Setup(x => x.ObterBicicletaPorNumero(numero)).ReturnsAsync((Bicicleta)null!);
 
             // Act
-            var result = await _bicicletasController.ObterBicicletaPorNumero(numero);
+            var result = await _bicicletaController.ObterBicicletaPorNumero(numero);
 
             // Assert
             Assert.IsType<ActionResult<Bicicleta>>(result);

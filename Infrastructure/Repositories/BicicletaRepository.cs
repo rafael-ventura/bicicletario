@@ -10,10 +10,12 @@ namespace bicicletario.Infrastructure.Repositories
     public class BicicletaRepository : IBicicletaRepository
     {
         private readonly ITrancaRepository _trancaRepository;
+        private readonly ITotemRepository _totemRepository;
 
-        public BicicletaRepository(ITrancaRepository trancaRepository)
+        public BicicletaRepository(ITrancaRepository trancaRepository, ITotemRepository totemRepository)
         {
             _trancaRepository = trancaRepository;
+            _totemRepository = totemRepository;
         }
 
         // mockar dados
@@ -126,46 +128,79 @@ namespace bicicletario.Infrastructure.Repositories
             throw new InvalidOperationException();
         }
 
-        public async Task<Bicicleta> IntegrarNaRede(int idTotem, int idBicicleta, int idFuncionario)
+        public async Task<Bicicleta> IntegrarNaRede(IntegrarNaRedeRequest request)
         {
-            var bicicleta = await Get(idTotem);
-            var tranca = await _trancaRepository.Get(idBicicleta);
+            var bicicleta = await Get(request.IdBicicleta);
+            var tranca = await _trancaRepository.Get(request.IdTranca);
+
 
             if (bicicleta == null)
-                throw new BicicletaNaoEncontradaException(idBicicleta);
+                throw new BicicletaNaoEncontradaException(request.IdBicicleta);
             if (tranca == null)
-                throw new TrancaNaoEncontradaException(idBicicleta);
-            if (bicicleta.Status != BicicletaStatus.EM_USO)
-                throw new BicicletaNaoDisponivelException(idBicicleta);
+                throw new TrancaNaoEncontradaException(request.IdTranca);
 
-            if (tranca.Status != TrancaStatus.OCUPADA)
-                throw new TrancaNaoDisponivelException(idTotem);
+            if (bicicleta.Status == BicicletaStatus.EmUso)
+            {
+                // _devolucaoRepository.Devolver(request.IdBicicleta);
+            }
 
-            tranca.Status = TrancaStatus.LIVRE;
+            await _trancaRepository.IntegrarNaRede(request.IdTranca);
 
-            await AtualizarStatus(bicicleta.Id, BicicletaStatus.DISPONIVEL);
+            await _trancaRepository.TrancarTranca(tranca.Id);
+
+            await AtualizarStatus(bicicleta.Id, BicicletaStatus.Disponivel);
+
+            // funcionario = _funcionarioRepository.getFuncionario(request.IdFuncionario);
+            // _emailRepository.enviarEmail(funcioanrio.Email, "Integracao da Bicicleta {request.IdBicicleta}", "Bicicleta {request.IdBicicleta} integrada na rede, na tranca {request.IdTranca}.");
             return bicicleta;
         }
 
-        public async Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
-            string statusAcaoReparador)
+        public async Task<Bicicleta> RetirarDaRede(RetirarDaRedeRequest request)
         {
-            var bicicleta = await Get(idBicicleta);
-            var tranca = await _trancaRepository.Get(idTranca);
+            var bicicleta = await Get(request.IdBicicleta);
+            var tranca = await _trancaRepository.Get(request.IdTranca);
 
-            if (bicicleta == null)
-                throw new BicicletaNaoEncontradaException(idBicicleta);
-            if (tranca == null)
-                throw new TrancaNaoEncontradaException(idTranca);
-            if (bicicleta.Status != BicicletaStatus.DISPONIVEL)
-                throw new BicicletaNaoDisponivelException(idBicicleta);
+            if (request.StatusAcaoReparador == "Aposentadoria")
+            {
+                if (tranca == null)
+                    throw new TrancaNaoEncontradaException(request.IdTranca);
 
-            if (tranca.Status != TrancaStatus.LIVRE)
-                throw new TrancaNaoDisponivelException(idTranca);
+                if (bicicleta.Status == BicicletaStatus.Disponivel)
+                    throw new BicicletaNaoDisponivelException(request.IdBicicleta);
 
-            tranca.Status = TrancaStatus.OCUPADA;
 
-            await AtualizarStatus(bicicleta.Id, BicicletaStatus.EM_USO);
+                if (tranca.Status == TrancaStatus.Livre)
+                {
+                    await RetirarDaRede(request);
+                    throw new TrancaNaoDisponivelException(request.IdTranca);
+                }
+
+                await _trancaRepository.DestrancarTranca(tranca.Id);
+
+                await _trancaRepository.RetirarDaRede(tranca.Id, request);
+
+                await AtualizarStatus(bicicleta.Id, BicicletaStatus.Aposentada);
+
+                // funcionario = _funcionarioRepository.getFuncionario(request.IdFuncionario);
+                // _emailRepository.enviarEmail(funcioanrio.Email, "Retirada da Bicicleta {request.IdBicicleta}", "Bicicleta {request.IdBicicleta} retirada da rede, na tranca {request.IdTranca}.");
+            }
+
+            if (request.StatusAcaoReparador == "Reparo")
+            {
+                if (tranca == null)
+                    throw new TrancaNaoEncontradaException(request.IdTranca);
+
+                await _trancaRepository.DestrancarTranca(tranca.Id);
+
+                await _trancaRepository.RetirarDaRede(tranca.Id, request);
+
+                await AtualizarStatus(bicicleta.Id, BicicletaStatus.EmReparo);
+
+                // funcionario = _funcionarioRepository.getFuncionario(request.IdFuncionario);
+                // _emailRepository.enviarEmail(funcioanrio.Email, "Retirada da Bicicleta {request.IdBicicleta}", "Bicicleta {request.IdBicicleta} retirada da rede, na tranca {request.IdTranca}.");
+            }
+
+
             return bicicleta;
         }
 
