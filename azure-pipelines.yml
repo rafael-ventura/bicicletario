@@ -22,13 +22,13 @@ jobs:
           find . -name obj -type d | xargs rm -rf
         displayName: 'Clean bin and obj folders'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Clean solution'
-        inputs:
-          command: clean
-          projects: 'bicicletario.csproj'
-          arguments: '--configuration $(buildConfiguration)'
-      
+#      - task: DotNetCoreCLI@2
+#        displayName: 'Clean solution'
+#        inputs:
+#          command: clean
+#          projects: 'bicicletario.csproj'
+#          arguments: '--configuration $(buildConfiguration)'
+#      
 
       - task: DotNetCoreCLI@2
         displayName: 'Restore solution'
