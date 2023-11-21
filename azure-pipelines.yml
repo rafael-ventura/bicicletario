@@ -15,7 +15,7 @@ jobs:
           packageType: sdk
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
-                
+      
       # Adicionando a limpeza dos diretórios bin e obj
       - script: |
           find . -name bin -type d | xargs rm -rf
@@ -25,10 +25,10 @@ jobs:
       - task: DotNetCoreCLI@2
         displayName: 'Clean solution'
         inputs:
-          command: 'run'
-          custom: 'clean'
+          command: clean
           projects: 'bicicletario.csproj'
           arguments: '--configuration $(buildConfiguration)'
+      
 
       - task: DotNetCoreCLI@2
         displayName: 'Restore solution'
