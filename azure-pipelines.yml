@@ -1,6 +1,6 @@
 name: CI
 trigger:
-  - main
+  - microservice/equipamento
 pool:
   vmImage: ubuntu-latest
 variables:
