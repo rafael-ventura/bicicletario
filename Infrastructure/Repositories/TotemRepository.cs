@@ -46,7 +46,7 @@ public class TotemRepository : ITotemRepository
         return Task.FromResult(totem);
     }
 
-    public Task<List<Totem>> IncluirTotem(NovoTotemRequest novoTotemRequest)
+    public Task<Totem> IncluirTotem(NovoTotemRequest novoTotemRequest)
     {
         var totem = new Totem
         {
@@ -65,7 +65,7 @@ public class TotemRepository : ITotemRepository
 
         File.WriteAllText("mock_totens.json", updatedJsonData);
 
-        return Task.FromResult(totens)!;
+        return Task.FromResult(totem);
     }
 
     public Task<Totem> EditarTotem(int idTotem, Totem totemAtualizado)

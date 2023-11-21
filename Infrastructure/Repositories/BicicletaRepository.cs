@@ -47,7 +47,7 @@ namespace bicicletario.Infrastructure.Repositories
                 return bicicletas;
             }
 
-            throw new InvalidOperationException();
+            throw new BicicletaNaoEncontradaException();
         }
 
         public Task<Bicicleta> Create(NovaBicicletaRequest bicicleta)

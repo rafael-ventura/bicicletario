@@ -21,25 +21,16 @@ public class BicicletaController : ControllerBase
 
     // GET: api/bicicletas
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         try
         {
             var bicicletas = await _bicicletaService.ObterTodasBicicletas();
-            var enumerable = bicicletas.ToList();
-            if (enumerable.Any())
-            {
-                return Ok(new { mensagem = "Bicicletas recuperadas com sucesso.", bicicletas = enumerable });
-            }
-            else
-            {
-                return NotFound(new { mensagem = "Nenhuma bicicleta encontrada." });
-            }
+            return Ok(new { mensagem = "Bicicletas encontradas.", bicicletas });
         }
-        catch (Exception ex)
+        catch (BicicletaNaoEncontradaException)
         {
-            // Log the exception here
-            return StatusCode(500, new { mensagem = "Erro ao recuperar bicicletas.", erro = ex.Message });
+            return NotFound(new { mensagem = "Nenhuma bicicleta encontrada." });
         }
     }
 
@@ -50,7 +41,7 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicletaCriada = await _bicicletaService.CriarBicicleta(novaBicicleta);
-            return CreatedAtAction(nameof(Get), new { id = bicicletaCriada.Id },
+            return CreatedAtAction(nameof(GetAll), new { id = bicicletaCriada.Id },
                 new { mensagem = "Dados cadastrados.", bicicletaCriada });
         }
         catch (DadosInvalidosException ex)
@@ -65,7 +56,7 @@ public class BicicletaController : ControllerBase
 
     // GET: api/bicicletas/{idBicicleta}
     [HttpGet("{idBicicleta}")]
-    public async Task<IActionResult> Get(int idBicicleta)
+    public async Task<IActionResult> GetAll(int idBicicleta)
     {
         try
         {

@@ -14,14 +14,21 @@ public class Bicicleta
 {
     public Bicicleta()
     {
-        Ano = DateTime.Now.Year.ToString();
-        Status = BicicletaStatus.Nova;
     }
-    
+    public Bicicleta(int id, string marca, string modelo, string ano, int numero, BicicletaStatus status)
+    {
+        Id = id;
+        Marca = marca;
+        Modelo = modelo;
+        Ano = ano;
+        Numero = numero;
+        Status = status;
+    }
+
     public int Id { get; set; }
     public string Marca { get; set; } = string.Empty;
     public string Modelo { get; set; } = string.Empty;
-    public string Ano { get; set; }
+    public string Ano { get; set; } = DateTime.Now.Year.ToString();
     public int Numero { get; set; }
-    public BicicletaStatus Status { get; set; }
+    public BicicletaStatus Status { get; set; } = BicicletaStatus.Nova;
 }

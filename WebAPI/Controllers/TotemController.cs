@@ -21,7 +21,7 @@ public class TotemController : ControllerBase
 
     // GET: /totem
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         try
         {
