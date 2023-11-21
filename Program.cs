@@ -11,6 +11,10 @@ builder.Services.AddScoped<IBicicletaService, BicicletaService>();
 builder.Services.AddScoped<ITotemService, TotemService>();
 builder.Services.AddScoped<ITrancaService, TrancaService>();
 
+builder.Services.AddScoped<IBicicletaRepository, BicicletaRepository>();
+builder.Services.AddScoped<ITotemRepository, TotemRepository>();
+builder.Services.AddScoped<ITrancaRepository, TrancaRepository>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
