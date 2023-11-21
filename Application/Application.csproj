@@ -2,9 +2,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Domain\Domain.csproj"/>
-
-
-        <PackageReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
 
 
