@@ -15,6 +15,12 @@ jobs:
           packageType: sdk
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
+                
+      # Adicionando a limpeza dos diretórios bin e obj
+      - script: |
+          find . -name bin -type d | xargs rm -rf
+          find . -name obj -type d | xargs rm -rf
+        displayName: 'Clean bin and obj folders'
 
       - task: DotNetCoreCLI@2
         displayName: 'Clean solution'
