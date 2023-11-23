@@ -44,7 +44,7 @@ public class TrancaService : ITrancaService
 
     public Task<Tranca> AtualizarTranca(int id, Tranca trancaAtualizada)
     {
-        var trancaEditada = _trancaRepository.UpdateBicicleta(id, trancaAtualizada);
+        var trancaEditada = _trancaRepository.Update(id, trancaAtualizada);
 
         return trancaEditada;
     }

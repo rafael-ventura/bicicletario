@@ -70,7 +70,7 @@ public class TrancaRepository : ITrancaRepository
     }
 
 
-    public Task<Tranca> UpdateBicicleta(int idTranca, Tranca trancaAtualizada)
+    public Task<Tranca> Update(int idTranca, Tranca trancaAtualizada)
     {
         var json = File.ReadAllText("mock_trancas.json");
         var trancas = JsonConvert.DeserializeObject<List<Tranca>>(json);

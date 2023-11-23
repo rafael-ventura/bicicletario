@@ -137,7 +137,8 @@ public class TotemRepository : ITotemRepository
 
     public async Task<List<Bicicleta>> ListarBicicletasDoTotem(int idTotem)
     {
-        var json = File.ReadAllText("mock_bicicletas.json");
+        var json = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mock_bicicletas.json");
+File.ReadAllText(json);
         var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(json);
 
         var trancas = await _trancaRepository.GetAll();

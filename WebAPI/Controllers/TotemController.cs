@@ -39,6 +39,25 @@ public class TotemController : ControllerBase
         }
     }
 
+    // GET: /totem/{id}
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int idTotem)
+    {
+        try
+        {
+            var totem = await _totemService.ObterTotem(idTotem);
+            return Ok(new TotemResponse { Mensagem = "Totem encontrado.", Totem = totem });
+        }
+        catch (TotemNaoEncontradoException)
+        {
+            return NotFound(new TotemResponse { Mensagem = "Totem não encontrado." });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new TotemResponse { Mensagem = "Erro ao listar totem." });
+        }
+    }
+
 
     // POST: /totem
     [HttpPost]

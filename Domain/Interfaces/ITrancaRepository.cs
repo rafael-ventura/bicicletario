@@ -10,7 +10,7 @@ public interface ITrancaRepository
 
     public Task<Tranca> Create(NovaTrancaRequest tranca);
 
-    public Task<Tranca> UpdateBicicleta(int id, Tranca tranca);
+    public Task<Tranca> Update(int id, Tranca tranca);
 
     public Task<Tranca> Delete(int id);
 

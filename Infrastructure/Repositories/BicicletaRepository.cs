@@ -19,7 +19,8 @@ namespace bicicletario.Infrastructure.Repositories
         // mockar dados
         public Task<Bicicleta> Get(int id)
         {
-            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var jsonData = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mock_bicicletas.json");
+File.ReadAllText(jsonData);
             var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
             if (bicicletas != null)
@@ -37,7 +38,8 @@ namespace bicicletario.Infrastructure.Repositories
 
         public List<Bicicleta> GetAll()
         {
-            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var jsonData = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mock_bicicletas.json");
+File.ReadAllText(jsonData);
             var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData) ?? new List<Bicicleta>();
             return bicicletas;
         }
@@ -45,7 +47,8 @@ namespace bicicletario.Infrastructure.Repositories
 
         public Task<Bicicleta> Create(NovaBicicletaRequest bicicleta)
         {
-            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var jsonData = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mock_bicicletas.json");
+File.ReadAllText(jsonData);
             var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
             if (bicicletas != null)
@@ -73,7 +76,8 @@ namespace bicicletario.Infrastructure.Repositories
 
         public Task<Bicicleta> Update(int id, NovaBicicletaRequest bicicleta)
         {
-            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var jsonData = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mock_bicicletas.json");
+File.ReadAllText(jsonData);
             var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
             if (bicicletas != null)
@@ -101,7 +105,8 @@ namespace bicicletario.Infrastructure.Repositories
 
         public Task<Bicicleta> Delete(int id)
         {
-            var jsonData = File.ReadAllText("mock_bicicletas.json");
+            var jsonData = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mock_bicicletas.json");
+File.ReadAllText(jsonData);
             var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
 
             if (bicicletas != null)

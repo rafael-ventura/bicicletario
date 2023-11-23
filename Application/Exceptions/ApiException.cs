@@ -2,12 +2,11 @@
 
 public class ApiException : Exception
 {
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public int StatusCode { get; set; }
-    public string UserFriendlyMessage { get; set; }
 
-    public ApiException(string message, int statusCode = 500, string? userFriendlyMessage = null!) : base(message)
+    public ApiException(string message, int statusCode = 500) : base(message)
     {
         StatusCode = statusCode;
-        UserFriendlyMessage = userFriendlyMessage ?? "Ocorreu um erro inesperado.";
     }
 }
