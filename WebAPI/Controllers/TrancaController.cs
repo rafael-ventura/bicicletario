@@ -3,7 +3,6 @@ using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
 using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bicicletario.WebAPI.Controllers;
@@ -32,7 +31,7 @@ public class TrancaController : ControllerBase
 
             return Ok(new TrancaResponse { Mensagem = "Trancas encontradas.", Trancas = enumerable });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return NotFound(new TrancaResponse { Mensagem = "Erro ao listar trancas." });
         }

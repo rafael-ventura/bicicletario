@@ -1,4 +1,3 @@
-using System.Globalization;
 using bicicletario.Application.Interfaces;
 using bicicletario.Application.Services;
 using bicicletario.Domain.Interfaces;

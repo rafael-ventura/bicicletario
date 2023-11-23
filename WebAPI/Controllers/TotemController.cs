@@ -33,7 +33,7 @@ public class TotemController : ControllerBase
         {
             return NotFound(new TotemResponse { Mensagem = "Nenhum totem encontrado." });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new TotemResponse { Mensagem = "Erro ao listar totens." });
         }
@@ -49,7 +49,7 @@ public class TotemController : ControllerBase
             var totems = await _totemService.IncluirTotem(novoTotemRequest);
             return Ok(new TotemResponse { Mensagem = "Totem criado com sucesso.", Totem = totems });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new TotemResponse { Mensagem = "Erro ao criar totem." });
         }
@@ -69,7 +69,7 @@ public class TotemController : ControllerBase
         {
             return NotFound(new TotemResponse { Mensagem = "Totem não encontrado." });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new TotemResponse { Mensagem = "Erro ao editar totem." });
         }
@@ -88,7 +88,7 @@ public class TotemController : ControllerBase
         {
             return NotFound(new TotemResponse { Mensagem = "Totem não encontrado." });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new TotemResponse { Mensagem = "Erro ao remover totem." });
         }
@@ -107,7 +107,7 @@ public class TotemController : ControllerBase
         {
             return NotFound(new TrancaResponse { Mensagem = "Totem não encontrado." });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new TrancaResponse { Mensagem = "Erro ao listar trancas do totem." });
         }
@@ -126,7 +126,7 @@ public class TotemController : ControllerBase
         {
             return NotFound(new BicicletaResponse { Mensagem = "Totem não encontrado." });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new BicicletaResponse { Mensagem = "Erro ao listar bicicletas do totem." });
         }

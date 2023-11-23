@@ -1,6 +1,5 @@
 using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
-using bicicletario.Domain.dtos;
 using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
 using bicicletario.WebAPI.Controllers;
@@ -46,7 +45,7 @@ namespace bicicletario.Tests
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(actionResult);
             var resultValue = Assert.IsType<BicicletaResponse>(okResult.Value);
-            var bicicletas = Assert.IsAssignableFrom<IEnumerable<Bicicleta>>(resultValue.Bicicletas);
+            Assert.IsAssignableFrom<IEnumerable<Bicicleta>>(resultValue.Bicicletas);
         }
 
 

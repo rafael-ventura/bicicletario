@@ -6,8 +6,8 @@ using bicicletario.Domain.Models;
 using bicicletario.WebAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Microsoft.AspNetCore.Http;
 
+namespace bicicletario.Tests;
 
 public class TrancasControllerTests
 {
