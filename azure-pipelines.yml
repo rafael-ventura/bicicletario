@@ -1,8 +1,7 @@
 name: CI
 
 trigger:
-  - main
-
+  - microservice/equipamento
 pool:
   vmImage: ubuntu-latest
 
@@ -19,17 +18,25 @@ jobs:
           packageType: sdk
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
-
+      
+      # Adicionando a limpeza dos diretórios bin e obj
       - script: |
-          rm -rf $(Build.SourcesDirectory)/**/bin/
-          rm -rf $(Build.SourcesDirectory)/**/obj/
+          find . -name bin -type d | xargs rm -rf
+          find . -name obj -type d | xargs rm -rf
         displayName: 'Clean bin and obj folders'
 
       - task: DotNetCoreCLI@2
-        displayName: 'Restore project dependencies'
+        displayName: 'Restore solution'
         inputs:
-          command: 'restore'
-          projects: '**/*.csproj'
+          command: restore
+          projects: 'bicicletario.csproj'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        inputs:
+          command: build
+          projects: 'bicicletario.csproj'
+          arguments: '--configuration $(buildConfiguration)'
 
       # Preparing SonarCloud analysis
       - task: SonarCloudPrepare@1
@@ -47,17 +54,17 @@ jobs:
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:
-          command: 'build'
-          projects: '**/*.csproj'
+          command: build
+          projects: 'bicicletario.csproj'
           arguments: '--configuration $(buildConfiguration)'
 
       - task: DotNetCoreCLI@2
         displayName: 'Test solution'
         inputs:
-          command: 'test'
-          projects: '**/*.csproj'
+          command: test
+          projects: '**/*Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
-
+      
       # Analyzing with SonarCloud
       - task: SonarCloudAnalyze@1
 
@@ -69,7 +76,7 @@ jobs:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'publish'
-          projects: '**/*.csproj'
+          projects: 'bicicletario.csproj'
           arguments: '--configuration $(buildConfiguration) --output publish_output'
         displayName: 'Publish project'
 
