@@ -22,9 +22,4 @@ public class TrancaNaoDisponivelException : ApiException
         : base($"Tranca com ID {trancaId} não está disponível.")
     {
     }
-
-    public TrancaNaoDisponivelException()
-        : base("Nenhuma tranca está disponível.")
-    {
-    }
 }
