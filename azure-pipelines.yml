@@ -63,7 +63,7 @@ jobs:
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --results-directory $(Build.ArtifactStagingDirectory)/TestResults'
+          arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --logger trx --results-directory $(Build.ArtifactStagingDirectory)/TestResults'
       
       
       # Analyzing with SonarCloud
