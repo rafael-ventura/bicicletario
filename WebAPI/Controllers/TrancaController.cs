@@ -1,6 +1,7 @@
 using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -26,14 +27,14 @@ public class TrancaController : ControllerBase
             var enumerable = trancas.ToList();
             if (!enumerable.Any())
             {
-                return NotFound(new { mensagem = "Nenhuma tranca encontrada." });
+                return NotFound(new TrancaResponse { Mensagem = "Nenhuma tranca encontrada." });
             }
 
-            return Ok(new { mensagem = "Trancas recuperadas com sucesso.", trancas = enumerable });
+            return Ok(new TrancaResponse { Mensagem = "Trancas encontradas.", Trancas = enumerable });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { mensagem = "Erro ao recuperar trancas.", erro = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = "Erro ao listar trancas." });
         }
     }
 
@@ -44,11 +45,11 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.ObterTrancaPorId(idTranca);
-            return Ok(new { mensagem = "Tranca Encontrada.", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca encontrada.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
     }
 
@@ -59,11 +60,11 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.IncluirTranca(novaTrancaRequest);
-            return CreatedAtAction(nameof(Create), new { id = tranca.Id }, tranca);
+            return CreatedAtAction(nameof(Create), new TrancaResponse { Mensagem = "Tranca criada com sucesso.", Tranca = tranca });
         }
         catch (DadosInvalidosException ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return UnprocessableEntity(new TrancaResponse { Mensagem = ex.Message });
         }
     }
 
@@ -74,15 +75,15 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.AtualizarTranca(idTranca, trancaAtualizada);
-            return Ok(new { mensagem = "Tranca atualizada com sucesso.", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca atualizada com sucesso.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
         catch (DadosInvalidosException ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return UnprocessableEntity(new TrancaResponse { Mensagem = ex.Message });
         }
     }
 
@@ -93,11 +94,11 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.RemoverTranca(idTranca);
-            return Ok(new { mensagem = "Tranca excluída com sucesso.", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca excluída com sucesso.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
     }
 
@@ -109,15 +110,15 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.IntegrarNaRede(idTranca);
-            return Ok(new { mensagem = "Tranca integrada com sucesso.", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca integrada com sucesso.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
         catch (DadosInvalidosException ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return UnprocessableEntity(new TrancaResponse { Mensagem = ex.Message });
         }
     }
 
@@ -128,15 +129,15 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.RetirarDaRede(idTranca, retirarTrancaRequest);
-            return Ok(new { mensagem = "Tranca retirada com sucesso.", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca retirada com sucesso.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
         catch (DadosInvalidosException ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return UnprocessableEntity(new TrancaResponse { Mensagem = ex.Message });
         }
     }
     
@@ -147,15 +148,15 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.AtualizarStatus(idTranca, acao);
-            return Ok(new { mensagem = "Tranca atualizada com sucesso.", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca atualizada com sucesso.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
         catch (DadosInvalidosException ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return UnprocessableEntity(new TrancaResponse { Mensagem = ex.Message });
         }
     }
 
@@ -166,19 +167,15 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.TrancarTranca(idTranca);
-            return Ok(new { mensagem = "Ação bem sucedida", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca trancada com sucesso.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
         catch (DadosInvalidosException ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(422, new { mensagem = "Tranca Ja se encontra trancada", erro = ex.Message });
+            return UnprocessableEntity(new TrancaResponse { Mensagem = ex.Message });
         }
     }
 
@@ -188,19 +185,19 @@ public class TrancaController : ControllerBase
         try
         {
             var tranca = await _trancaService.DestrancarTranca(idTranca);
-            return Ok(new { mensagem = "Ação bem sucedida", tranca });
+            return Ok(new TrancaResponse { Mensagem = "Tranca destrancada com sucesso.", Tranca = tranca });
         }
         catch (TrancaNaoEncontradaException ex)
         {
-            return NotFound(new { mensagem = ex.Message });
+            return NotFound(new TrancaResponse { Mensagem = ex.Message });
         }
         catch (DadosInvalidosException ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return UnprocessableEntity(new TrancaResponse { Mensagem = ex.Message });
         }
         catch (Exception ex)
         {
-            return StatusCode(422, new { mensagem = "Tranca Ja se encontra destrancada", erro = ex.Message });
+            return StatusCode(422, new TrancaResponse { Mensagem = ex.Message });
         }
     }
 }
