@@ -7,7 +7,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  group: bike 
+  group: bike
 
 jobs:
   - job: BuildTestAnalyzeDeploy
@@ -63,8 +63,8 @@ jobs:
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" --results-directory $(Build.ArtifactStagingDirectory)/TestResults'
-      
+          arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- DataCollectorConfig:CodeCoverage/CodeCoverage.runsettings --results-directory $(Build.ArtifactStagingDirectory)/TestResults'
+          
       
       # Analyzing with SonarCloud
       - task: SonarCloudAnalyze@1
