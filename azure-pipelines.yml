@@ -48,9 +48,9 @@ jobs:
           projectKey: 'rafael-ventura_bicicletario'
           projectName: 'bicicletario'
           extraProperties: |
-            sonar.cs.opencover.reportsPaths=coverage/coverage.opencover.xml
-            
-      
+            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/coverage/coverage.opencover.xml
+
+
       - task: DotNetCoreCLI@2
         displayName: 'Build solution'
         inputs:
@@ -63,7 +63,8 @@ jobs:
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "XPlat Code Coverage" -- DataCollectorConfig:CodeCoverage/CodeCoverage.runsettings'
+          arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- DataCollectorConfig:CodeCoverage/CodeCoverage.runsettings /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+
       
       # Analyzing with SonarCloud
       - task: SonarCloudAnalyze@1
