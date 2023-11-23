@@ -16,7 +16,6 @@ public interface ITotemService
     public Task<List<Tranca>> ListarTrancasDoTotem(int idTotem);
 
     public Task<List<Bicicleta>> ListarBicicletasDoTotem(int idTotem);
-    
+
     public Task<Totem> ObterTotem(int id);
-    
 }

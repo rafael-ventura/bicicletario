@@ -11,12 +11,11 @@ public interface IBicicletaService
     
     public Task<Bicicleta> CriarBicicleta(NovaBicicletaRequest bicicleta);
     
-    public Task<Bicicleta> IntegrarNaRede(int idTotem, int idTranca, int idFuncionario);
+    public Task<Bicicleta> IntegrarNaRede(IntegrarNaRedeRequest request);
     
     public bool RemoverBicicleta(int id);
     
-    public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
-        string statusAcaoReparador);
+    public Task<Bicicleta> RetirarDaRede(RetirarDaRedeRequest request);
     
     public Task<Bicicleta> AtualizarBicicleta(int id, NovaBicicletaRequest bicicleta);
     

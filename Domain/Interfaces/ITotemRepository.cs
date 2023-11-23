@@ -10,7 +10,7 @@ public interface ITotemRepository
    
    public Task<Totem> ObterTotemPorId(int id);
    
-   public Task<Totem> IncluirTotem(NovoTotemRequest novoNovoTotemRequest);
+   public  Task<Totem> IncluirTotem(NovoTotemRequest novoTotemRequest);
    
    public Task<Totem> EditarTotem(int id, Totem totemAtualizado);
    

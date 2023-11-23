@@ -2,9 +2,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Domain\Domain.csproj"/>
-        
-        
-        <PackageReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
 
 
@@ -13,6 +10,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     </PropertyGroup>
 
 </Project>

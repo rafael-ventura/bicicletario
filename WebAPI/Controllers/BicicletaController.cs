@@ -1,6 +1,7 @@
 ﻿using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +10,11 @@ namespace bicicletario.WebAPI.Controllers;
 // /bicicletas
 [ApiController]
 [Route("[controller]")]
-public class BicicletasController : ControllerBase
+public class BicicletaController : ControllerBase
 {
     private readonly IBicicletaService _bicicletaService;
 
-    public BicicletasController(IBicicletaService bicicletaService)
+    public BicicletaController(IBicicletaService bicicletaService)
     {
         _bicicletaService = bicicletaService;
     }
@@ -21,27 +22,19 @@ public class BicicletasController : ControllerBase
 
     // GET: api/bicicletas
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         try
         {
             var bicicletas = await _bicicletaService.ObterTodasBicicletas();
-            var enumerable = bicicletas.ToList();
-            if (enumerable.Any())
-            {
-                return Ok(new { mensagem = "Bicicletas recuperadas com sucesso.", bicicletas = enumerable });
-            }
-            else
-            {
-                return NotFound(new { mensagem = "Nenhuma bicicleta encontrada." });
-            }
+            return Ok(new BicicletaResponse { Mensagem = "Bicicletas encontradas.", Bicicletas = bicicletas });
         }
-        catch (Exception ex)
+        catch (BicicletaNaoEncontradaException)
         {
-            // Log the exception here
-            return StatusCode(500, new { mensagem = "Erro ao recuperar bicicletas.", erro = ex.Message });
+            return NotFound(new BicicletaResponse { Mensagem = "Nenhuma bicicleta encontrada." });
         }
     }
+
 
     // POST: api/bicicletas
     [HttpPost]
@@ -50,7 +43,7 @@ public class BicicletasController : ControllerBase
         try
         {
             var bicicletaCriada = await _bicicletaService.CriarBicicleta(novaBicicleta);
-            return CreatedAtAction(nameof(Get), new { id = bicicletaCriada.Id },
+            return CreatedAtAction(nameof(GetAll), new { id = bicicletaCriada.Id },
                 new { mensagem = "Dados cadastrados.", bicicletaCriada });
         }
         catch (DadosInvalidosException ex)
@@ -65,7 +58,7 @@ public class BicicletasController : ControllerBase
 
     // GET: api/bicicletas/{idBicicleta}
     [HttpGet("{idBicicleta}")]
-    public async Task<IActionResult> Get(int idBicicleta)
+    public async Task<IActionResult> GetAll(int idBicicleta)
     {
         try
         {
@@ -122,20 +115,12 @@ public class BicicletasController : ControllerBase
     {
         try
         {
-            var bicicletaIntegrada = await _bicicletaService.IntegrarNaRede(
-                bicicleta.IdTranca,
-                bicicleta.IdBicicleta,
-                bicicleta.IdFuncionario
-            );
+            var bicicletaIntegrada = await _bicicletaService.IntegrarNaRede(bicicleta);
             return Ok(new { mensagem = "Dados cadastrados.", bicicletaIntegrada });
         }
         catch (DadosInvalidosException)
         {
             return BadRequest(new { mensagem = "Dados inválidos." });
-        }
-        catch (BicicletaNaoEncontradaException)
-        {
-            return NotFound(new { mensagem = "Bicicleta não encontrada." });
         }
     }
 
@@ -144,12 +129,7 @@ public class BicicletasController : ControllerBase
     {
         try
         {
-            var bicicletaRemovida = await _bicicletaService.RetirarDaRede(
-                request.IdTranca,
-                request.IdBicicleta,
-                request.IdFuncionario,
-                request.StatusAcaoReparador
-            );
+            var bicicletaRemovida = await _bicicletaService.RetirarDaRede(request);
             return Ok(new { mensagem = "Bicicleta retirada da rede com sucesso.", bicicletaRemovida });
         }
         catch (BicicletaNaoEncontradaException)

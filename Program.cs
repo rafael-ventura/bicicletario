@@ -7,14 +7,13 @@ using bicicletario.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IAluguelService, AluguelService>();
-builder.Services.AddScoped<IDevolucaoService, DevolucaoService>();
 builder.Services.AddScoped<IBicicletaService, BicicletaService>();
 builder.Services.AddScoped<ITotemService, TotemService>();
 builder.Services.AddScoped<ITrancaService, TrancaService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
-
+builder.Services.AddScoped<IBicicletaRepository, BicicletaRepository>();
+builder.Services.AddScoped<ITotemRepository, TotemRepository>();
+builder.Services.AddScoped<ITrancaRepository, TrancaRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -34,13 +33,6 @@ if (connectionString is null)
 builder.Services.AddSingleton(connectionString);
 
 var app = builder.Build();
-
-var supportedCultures = new[] { new CultureInfo("en-US") };
-var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture("en-US")
-    .AddSupportedCultures(supportedCultures.ToString() ?? string.Empty)
-    .AddSupportedUICultures(supportedCultures.ToString() ?? string.Empty);
-
-app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -33,9 +33,14 @@ public class BicicletaService : IBicicletaService
     public Task<List<Bicicleta>> ObterTodasBicicletas()
     {
         var bicicletas = _bicicletaRepository.GetAll();
+        if (!bicicletas.Any())
+        {
+            throw new BicicletaNaoEncontradaException();
+        }
 
         return Task.FromResult(bicicletas);
     }
+
 
     public Task<Bicicleta> CriarBicicleta(NovaBicicletaRequest bicicleta)
     {
@@ -44,9 +49,9 @@ public class BicicletaService : IBicicletaService
         return bicicletaCriada;
     }
 
-    public Task<Bicicleta> IntegrarNaRede(int idTotem, int idTranca, int idFuncionario)
+    public Task<Bicicleta> IntegrarNaRede(IntegrarNaRedeRequest request)
     {
-        var bicicletaIntegrada = _bicicletaRepository.IntegrarNaRede(idTotem, idTranca, idFuncionario);
+        var bicicletaIntegrada = _bicicletaRepository.IntegrarNaRede(request);
 
         return bicicletaIntegrada;
     }
@@ -70,16 +75,11 @@ public class BicicletaService : IBicicletaService
         return true;
     }
 
-    public Task<Bicicleta> RetirarDaRede(int idTranca, int idBicicleta, int idFuncionario,
-        string statusAcaoReparador)
+    public Task<Bicicleta> RetirarDaRede(RetirarDaRedeRequest request)
     {
-        var bicicleta = _bicicletaRepository.Get(idBicicleta);
-        var tranca = _trancaRepository.Get(idTranca);
+        var bicicletaRetirada = _bicicletaRepository.RetirarDaRede(request);
 
-        // idFuncionario = _totemRepository.Get(idFuncionario);
-        bicicleta = _bicicletaRepository.RetirarDaRede(idTranca, idBicicleta, idFuncionario, statusAcaoReparador);
-
-        return bicicleta;
+        return bicicletaRetirada;
     }
 
     // metodo para atualizar status

@@ -3,6 +3,7 @@ using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.responses;
 
 namespace bicicletario.WebAPI.Controllers;
 
@@ -21,23 +22,23 @@ public class TotemController : ControllerBase
 
     // GET: /totem
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         try
         {
             var totens = await _totemService.ObterTodosTotens();
-            if (!totens.Any())
-            {
-                return NotFound(new { mensagem = "Nenhum totem encontrado." });
-            }
-
-            return Ok(new { mensagem = "Totens recuperados com sucesso.", totens });
+            return Ok(new TotemResponse { Mensagem = "Totens encontrados.", Totens = totens });
+        }
+        catch (TotemNaoEncontradoException)
+        {
+            return NotFound(new TotemResponse { Mensagem = "Nenhum totem encontrado." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { mensagem = "Erro ao recuperar totens.", erro = ex.Message });
+            return StatusCode(500, new TotemResponse { Mensagem = "Erro ao listar totens." });
         }
     }
+
 
     // POST: /totem
     [HttpPost]
@@ -45,12 +46,12 @@ public class TotemController : ControllerBase
     {
         try
         {
-            var totem = await _totemService.IncluirTotem(novoTotemRequest);
-            return CreatedAtAction(nameof(Create), new { id = totem.Id }, totem);
+            var totems = await _totemService.IncluirTotem(novoTotemRequest);
+            return Ok(new TotemResponse { Mensagem = "Totem criado com sucesso.", Totem = totems });
         }
-        catch (DadosInvalidosException ex)
+        catch (Exception ex)
         {
-            return UnprocessableEntity(new { mensagem = ex.Message });
+            return StatusCode(500, new TotemResponse { Mensagem = "Erro ao criar totem." });
         }
     }
 
@@ -61,16 +62,16 @@ public class TotemController : ControllerBase
         try
         {
             var totemEditado = await _totemService.EditarTotem(idTotem, totemAtualizado);
-            return Ok(new { mensagem = "Totem editado com sucesso.", totemEditado });
+            return Ok(new TotemResponse { Mensagem = "Totem editado com sucesso.", Totem = totemEditado });
         }
 
         catch (TotemNaoEncontradoException)
         {
-            return NotFound(new { mensagem = "Totem não encontrado." });
+            return NotFound(new TotemResponse { Mensagem = "Totem não encontrado." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { mensagem = "Erro ao editar totem.", erro = ex.Message });
+            return StatusCode(500, new TotemResponse { Mensagem = "Erro ao editar totem." });
         }
     }
 
@@ -80,16 +81,16 @@ public class TotemController : ControllerBase
     {
         try
         {
-            await _totemService.RemoverTotem(idTotem);
-            return Ok(new { mensagem = "Totem removido com sucesso." });
+            var totem = await _totemService.RemoverTotem(idTotem);
+            return Ok(new TotemResponse { Mensagem = "Totem removido com sucesso.", Totem = totem });
         }
         catch (TotemNaoEncontradoException)
         {
-            return NotFound(new { mensagem = "Totem não encontrado." });
+            return NotFound(new TotemResponse { Mensagem = "Totem não encontrado." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { mensagem = "Erro ao remover totem.", erro = ex.Message });
+            return StatusCode(500, new TotemResponse { Mensagem = "Erro ao remover totem." });
         }
     }
 
@@ -100,15 +101,15 @@ public class TotemController : ControllerBase
         try
         {
             var trancas = await _totemService.ListarTrancasDoTotem(idTotem);
-            return Ok(new { mensagem = "Trancas listadas com sucesso.", trancas });
+            return Ok(new TrancaResponse { Mensagem = "Trancas listadas com sucesso.", Trancas = trancas });
         }
         catch (TotemNaoEncontradoException)
         {
-            return NotFound(new { mensagem = "Totem não encontrado." });
+            return NotFound(new TrancaResponse { Mensagem = "Totem não encontrado." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { mensagem = "Erro ao listar trancas do totem.", erro = ex.Message });
+            return StatusCode(500, new TrancaResponse { Mensagem = "Erro ao listar trancas do totem." });
         }
     }
 
@@ -119,16 +120,15 @@ public class TotemController : ControllerBase
         try
         {
             var bicicletas = await _totemService.ListarBicicletasDoTotem(idTotem);
-            return Ok(new { mensagem = "Bicicletas listadas com sucesso.", bicicletas });
+            return Ok(new BicicletaResponse { Mensagem = "Bicicletas listadas com sucesso.", Bicicletas = bicicletas });
         }
         catch (TotemNaoEncontradoException)
         {
-            return NotFound(new { mensagem = "Totem não encontrado." });
+            return NotFound(new BicicletaResponse { Mensagem = "Totem não encontrado." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { mensagem = "Erro ao listar bicicletas do totem.", erro = ex.Message });
+            return StatusCode(500, new BicicletaResponse { Mensagem = "Erro ao listar bicicletas do totem." });
         }
     }
-
 }

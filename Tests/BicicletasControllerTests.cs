@@ -1,4 +1,7 @@
+using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
+using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
 using bicicletario.WebAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -9,72 +12,56 @@ namespace bicicletario.Tests
     public class BicicletasControllerTests
     {
         private readonly Mock<IBicicletaService> _bicicletaServiceMock;
-        private readonly BicicletasController _bicicletasController;
+        private readonly BicicletaController _bicicletaController;
 
         public BicicletasControllerTests()
         {
             _bicicletaServiceMock = new Mock<IBicicletaService>();
-            _bicicletasController = new BicicletasController(_bicicletaServiceMock.Object);
+            _bicicletaController = new BicicletaController(_bicicletaServiceMock.Object);
         }
 
         [Fact]
-        public async Task Get_Bicicleta_ById()
+        public async Task GetAll_ReturnsOkWithBicicletas_WhenBicicletasExist()
         {
             // Arrange
-            var id = 1;
-            var bicicleta = new Bicicleta();
-            _bicicletaServiceMock.Setup(x => x.ObterBicicleta(id)).ReturnsAsync(bicicleta);
+            var mockBicicletas = new List<Bicicleta>
+            {
+                new Bicicleta
+                {
+                    Id = 1, Marca = "Marca A", Modelo = "Modelo A", Ano = "2021", Numero = 101,
+                    Status = BicicletaStatus.Disponivel
+                },
+                new Bicicleta
+                {
+                    Id = 2, Marca = "Marca B", Modelo = "Modelo B", Ano = "2022", Numero = 102,
+                    Status = BicicletaStatus.EmUso
+                },
+            };
+
+            _bicicletaServiceMock.Setup(s => s.ObterTodasBicicletas()).ReturnsAsync(mockBicicletas);
 
             // Act
-            var result = await _bicicletasController.Get(id);
+            var actionResult = await _bicicletaController.GetAll();
 
             // Assert
-            Assert.IsType<ActionResult<Bicicleta>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult);
+            var resultValue = Assert.IsType<BicicletaResponse>(okResult.Value);
+            var bicicletas = Assert.IsAssignableFrom<IEnumerable<Bicicleta>>(resultValue.Bicicletas);
         }
 
-        [Fact]
-        public async Task Get_Bicicleta_ById_NotFound()
-        {
-            // Arrange
-            var id = 1;
-            _bicicletaServiceMock.Setup(x => x.ObterBicicleta(id)).ReturnsAsync((Bicicleta)null!);
-
-            // Act
-            var result = await _bicicletasController.Get(id);
-
-            // Assert
-            Assert.IsType<ActionResult<Bicicleta>>(result);
-            Assert.IsType<NotFoundResult>(result);
-        }
 
         [Fact]
-        public async Task Get_Bicicleta_ByNumero()
+        public async Task GetAll_ReturnsNotFound_WhenNoBicicletasExist()
         {
             // Arrange
-            var numero = 1;
-            var bicicleta = new Bicicleta();
-            _bicicletaServiceMock.Setup(x => x.ObterBicicletaPorNumero(numero)).ReturnsAsync(bicicleta);
+            _bicicletaServiceMock.Setup(s => s.ObterTodasBicicletas())
+                .ThrowsAsync(new BicicletaNaoEncontradaException());
 
             // Act
-            var result = await _bicicletasController.ObterBicicletaPorNumero(numero);
+            var actionResult = await _bicicletaController.GetAll();
 
             // Assert
-            Assert.IsType<ActionResult<Bicicleta>>(result);
-        }
-
-        [Fact]
-        public async Task Get_Bicicleta_ByNumero_NotFound()
-        {
-            // Arrange
-            var numero = 1;
-            _bicicletaServiceMock.Setup(x => x.ObterBicicletaPorNumero(numero)).ReturnsAsync((Bicicleta)null!);
-
-            // Act
-            var result = await _bicicletasController.ObterBicicletaPorNumero(numero);
-
-            // Assert
-            Assert.IsType<ActionResult<Bicicleta>>(result);
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundObjectResult>(actionResult);
         }
     }
 }
