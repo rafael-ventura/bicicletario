@@ -1,10 +1,14 @@
 name: CI
+
 trigger:
-  - microservice/equipamento
+  - main
+
 pool:
   vmImage: ubuntu-latest
+
 variables:
   buildConfiguration: 'Release'
+
 jobs:
   - job: BuildTestAnalyzeDeploy
     displayName: 'Build, Test, Analyze and Deploy'
@@ -15,42 +19,19 @@ jobs:
           packageType: sdk
           version: 7.x
           installationPath: $(Agent.ToolsDirectory)/dotnet
-      
-      # Adicionando a limpeza dos diretórios bin e obj
+
       - script: |
-          find . -name bin -type d | xargs rm -rf
-          find . -name obj -type d | xargs rm -rf
+          rm -rf $(Build.SourcesDirectory)/**/bin/
+          rm -rf $(Build.SourcesDirectory)/**/obj/
         displayName: 'Clean bin and obj folders'
 
-#      - task: DotNetCoreCLI@2
-#        displayName: 'Clean solution'
-#        inputs:
-#          command: clean
-#          projects: 'bicicletario.csproj'
-#          arguments: '--configuration $(buildConfiguration)'
-#      
-
       - task: DotNetCoreCLI@2
-        displayName: 'Restore solution'
+        displayName: 'Restore project dependencies'
         inputs:
-          command: restore
-          projects: 'bicicletario.csproj'
+          command: 'restore'
+          projects: '**/*.csproj'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Build solution'
-        inputs:
-          command: build
-          projects: 'bicicletario.csproj'
-          arguments: '--configuration $(buildConfiguration)'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Test solution'
-        inputs:
-          command: test
-          projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
-
-      # Passo para preparar a análise SonarCloud
+      # Preparing SonarCloud analysis
       - task: SonarCloudPrepare@1
         inputs:
           SonarCloud: 'bike'
@@ -63,19 +44,32 @@ jobs:
             sonar.coverage.exclusions="**Tests*.cs"
             sonar.login="9970105f3d9489edff4656f4b71b702442066822"
 
-      # Passo para análise SonarCloud
+      - task: DotNetCoreCLI@2
+        displayName: 'Build solution'
+        inputs:
+          command: 'build'
+          projects: '**/*.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Test solution'
+        inputs:
+          command: 'test'
+          projects: '**/*.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
+
+      # Analyzing with SonarCloud
       - task: SonarCloudAnalyze@1
 
-      # Passo para publicar os resultados da análise SonarCloud
+      # Publishing SonarCloud results
       - task: SonarCloudPublish@1
         inputs:
           pollingTimeoutSec: '300'
 
-      # Publicando o projeto
       - task: DotNetCoreCLI@2
         inputs:
           command: 'publish'
-          projects: 'bicicletario.csproj'
+          projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration) --output publish_output'
         displayName: 'Publish project'
 
