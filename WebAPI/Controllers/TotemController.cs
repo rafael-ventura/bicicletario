@@ -2,7 +2,7 @@ using bicicletario.Application.Exceptions;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using bicicletario.Application.Interfaces;
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.dtos.responses;
 
 namespace bicicletario.WebAPI.Controllers;

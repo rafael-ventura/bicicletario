@@ -1,6 +1,6 @@
 using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 
@@ -9,15 +9,10 @@ namespace bicicletario.Application.Services;
 public class TrancaService : ITrancaService
 {
     private readonly ITrancaRepository _trancaRepository;
-    private readonly IBicicletaRepository _bicicletaRepository;
-    private readonly ITotemRepository _totemRepository;
 
-    public TrancaService(ITrancaRepository trancaRepository, IBicicletaRepository bicicletaRepository,
-        ITotemRepository totemRepository)
+    public TrancaService(ITrancaRepository trancaRepository)
     {
         _trancaRepository = trancaRepository;
-        _bicicletaRepository = bicicletaRepository;
-        _totemRepository = totemRepository;
     }
 
     public Task<List<Tranca>> ObterTodasTrancas()

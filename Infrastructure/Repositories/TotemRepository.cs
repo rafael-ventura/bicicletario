@@ -1,4 +1,4 @@
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 using Newtonsoft.Json;

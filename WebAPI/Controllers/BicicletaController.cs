@@ -1,6 +1,6 @@
 ﻿using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -43,31 +43,27 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicletaCriada = await _bicicletaService.CriarBicicleta(novaBicicleta);
-            return CreatedAtAction(nameof(GetAll), new { id = bicicletaCriada.Id },
-                new { mensagem = "Dados cadastrados.", bicicletaCriada });
+            return Ok(new BicicletaResponse
+                { Mensagem = "Bicicleta criada com sucesso.", Bicicleta = bicicletaCriada });
         }
-        catch (DadosInvalidosException ex)
+        catch (DadosInvalidosException)
         {
-            return StatusCode(ex.StatusCode, new { mensagem = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { mensagem = "Erro ao cadastrar bicicleta.", erro = ex.Message });
+            return BadRequest(new BicicletaResponse { Mensagem = "Dados inválidos." });
         }
     }
 
     // GET: api/bicicletas/{idBicicleta}
     [HttpGet("{idBicicleta}")]
-    public async Task<IActionResult> GetAll(int idBicicleta)
+    public async Task<IActionResult> Get(int idBicicleta)
     {
         try
         {
             var bicicleta = await _bicicletaService.ObterBicicleta(idBicicleta);
-            return Ok(new { mensagem = "Bicicleta encontrada.", bicicleta });
+            return Ok(new BicicletaResponse { Mensagem = "Bicicleta encontrada.", Bicicleta = bicicleta });
         }
         catch (BicicletaNaoEncontradaException)
         {
-            return NotFound();
+            return NotFound(new BicicletaResponse { Mensagem = "Bicicleta não encontrada." });
         }
     }
 
@@ -78,35 +74,32 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicletaAtualizada = await _bicicletaService.AtualizarBicicleta(id, bicicleta);
-            return Ok(new { mensagem = "Bicicleta atualizada com sucesso.", bicicletaAtualizada });
+            return Ok(new BicicletaResponse
+                { Mensagem = "Bicicleta atualizada com sucesso.", Bicicleta = bicicletaAtualizada });
         }
         catch (BicicletaNaoEncontradaException)
         {
-            return NotFound(new { mensagem = "Bicicleta não encontrada." });
+            return NotFound(new BicicletaResponse { Mensagem = "Bicicleta não encontrada." });
         }
     }
 
 // DELETE: api/bicicletas/{idBicicleta}
     [HttpDelete("{idBicicleta}")]
-    public Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            var sucesso = _bicicletaService.RemoverBicicleta(id);
-            if (sucesso)
+            var bicicletaRemovida = await _bicicletaService.RemoverBicicleta(id);
+            if (bicicletaRemovida)
             {
-                return Task.FromResult<IActionResult>(Ok(new { mensagem = "Bicicleta removida com sucesso." }));
+                return Ok(new BicicletaResponse { Mensagem = "Bicicleta removida com sucesso." });
             }
-            else
-            {
-                return Task.FromResult<IActionResult>(NotFound(new
-                    { mensagem = "Bicicleta não encontrada para remoção." }));
-            }
+
+            return BadRequest(new BicicletaResponse { Mensagem = "Erro ao remover bicicleta." });
         }
-        catch (Exception ex)
+        catch (BicicletaNaoEncontradaException)
         {
-            return Task.FromResult<IActionResult>(BadRequest(new
-                { mensagem = "Erro ao remover bicicleta.", erro = ex.Message }));
+            return NotFound(new BicicletaResponse { Mensagem = "Bicicleta não encontrada." });
         }
     }
 
@@ -116,11 +109,12 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicletaIntegrada = await _bicicletaService.IntegrarNaRede(bicicleta);
-            return Ok(new { mensagem = "Dados cadastrados.", bicicletaIntegrada });
+            return Ok(new BicicletaResponse
+                { Mensagem = "Bicicleta integrada na rede com sucesso.", Bicicleta = bicicletaIntegrada });
         }
         catch (DadosInvalidosException)
         {
-            return BadRequest(new { mensagem = "Dados inválidos." });
+            return BadRequest(new BicicletaResponse { Mensagem = "Dados inválidos." });
         }
     }
 
@@ -130,19 +124,16 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicletaRemovida = await _bicicletaService.RetirarDaRede(request);
-            return Ok(new { mensagem = "Bicicleta retirada da rede com sucesso.", bicicletaRemovida });
+            return Ok(new BicicletaResponse
+                { Mensagem = "Bicicleta retirada da rede com sucesso.", Bicicleta = bicicletaRemovida });
         }
         catch (BicicletaNaoEncontradaException)
         {
-            return NotFound(new { mensagem = "Bicicleta não encontrada." });
+            return NotFound(new BicicletaResponse { Mensagem = "Bicicleta não encontrada." });
         }
         catch (FuncionarioNaoAutorizadoException)
         {
-            return BadRequest(new { mensagem = "Funcionário não autorizado." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { mensagem = "Erro ao retirar a bicicleta da rede.", erro = ex.Message });
+            return BadRequest(new BicicletaResponse { Mensagem = "Funcionário não autorizado." });
         }
     }
 
@@ -152,15 +143,12 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicletaAtualizada = await _bicicletaService.AtualizarStatus(idBicicleta, acao);
-            return Ok(new { mensagem = "Status da bicicleta atualizado com sucesso.", bicicletaAtualizada });
+            return Ok(new BicicletaResponse
+                { Mensagem = "Status da bicicleta atualizado com sucesso.", Bicicleta = bicicletaAtualizada });
         }
         catch (BicicletaNaoEncontradaException)
         {
-            return NotFound(new { mensagem = "Bicicleta não encontrada." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { mensagem = "Erro ao atualizar o status da bicicleta.", erro = ex.Message });
+            return NotFound(new BicicletaResponse { Mensagem = "Bicicleta não encontrada." });
         }
     }
 
@@ -170,11 +158,11 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicleta = await _bicicletaService.ObterBicicletaPorNumero(numero);
-            return Ok(new { mensagem = "Bicicleta encontrada.", bicicleta });
+            return Ok(new BicicletaResponse { Mensagem = "Bicicleta encontrada.", Bicicleta = bicicleta });
         }
         catch (BicicletaNaoEncontradaException)
         {
-            return NotFound(new { mensagem = "Bicicleta não encontrada." });
+            return NotFound(new BicicletaResponse { Mensagem = "Bicicleta não encontrada." });
         }
     }
 }

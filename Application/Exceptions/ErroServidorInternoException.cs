@@ -2,7 +2,7 @@
 
 public class ErroServidorInternoException : ApiException
 {
-    public ErroServidorInternoException(string message) : base(message, 500)
+    public ErroServidorInternoException(string message) : base(message)
     {
     }
 }

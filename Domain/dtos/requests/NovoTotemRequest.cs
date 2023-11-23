@@ -1,4 +1,4 @@
-namespace bicicletario.Domain.dtos;
+namespace bicicletario.Domain.dtos.requests;
 
 public record NovoTotemRequest
 {

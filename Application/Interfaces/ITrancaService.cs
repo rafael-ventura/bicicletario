@@ -1,4 +1,4 @@
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.Models;
 
 namespace bicicletario.Application.Interfaces;

@@ -1,4 +1,4 @@
-﻿using bicicletario.Domain.dtos;
+﻿using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.Models;
 
 namespace bicicletario.Application.Interfaces;
@@ -13,7 +13,7 @@ public interface IBicicletaService
     
     public Task<Bicicleta> IntegrarNaRede(IntegrarNaRedeRequest request);
     
-    public bool RemoverBicicleta(int id);
+    public Task<bool> RemoverBicicleta(int id);
     
     public Task<Bicicleta> RetirarDaRede(RetirarDaRedeRequest request);
     

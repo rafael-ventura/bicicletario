@@ -1,6 +1,6 @@
 using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
 using bicicletario.WebAPI.Controllers;

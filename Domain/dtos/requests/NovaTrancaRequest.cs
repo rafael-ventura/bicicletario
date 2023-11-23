@@ -1,6 +1,6 @@
 using bicicletario.Domain.Models;
 
-namespace bicicletario.Domain.dtos;
+namespace bicicletario.Domain.dtos.requests;
 
 public class NovaTrancaRequest
 {

@@ -1,6 +1,6 @@
 ﻿using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 
@@ -9,15 +9,10 @@ namespace bicicletario.Application.Services;
 public class BicicletaService : IBicicletaService
 {
     private readonly IBicicletaRepository _bicicletaRepository;
-    private readonly ITrancaRepository _trancaRepository;
-    private readonly ITotemRepository _totemRepository;
 
-    public BicicletaService(IBicicletaRepository bicicletaRepository, ITrancaRepository trancaRepository,
-        ITotemRepository totemRepository)
+    public BicicletaService(IBicicletaRepository bicicletaRepository)
     {
         _bicicletaRepository = bicicletaRepository;
-        _trancaRepository = trancaRepository;
-        _totemRepository = totemRepository;
     }
 
     public Task<Bicicleta> ObterBicicleta(int id)
@@ -65,14 +60,14 @@ public class BicicletaService : IBicicletaService
     }
 
 
-    public bool RemoverBicicleta(int id)
+    public Task<bool> RemoverBicicleta(int id)
     {
         var bicicletaRemovida = _bicicletaRepository.Delete(id);
 
         if (bicicletaRemovida == null)
             throw new BicicletaNaoEncontradaException(id);
 
-        return true;
+        return Task.FromResult(true);
     }
 
     public Task<Bicicleta> RetirarDaRede(RetirarDaRedeRequest request)

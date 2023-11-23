@@ -1,5 +1,5 @@
 ﻿using bicicletario.Application.Exceptions;
-using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.requests;
 using bicicletario.Domain.Interfaces;
 using bicicletario.Domain.Models;
 using Newtonsoft.Json;
@@ -10,12 +10,10 @@ namespace bicicletario.Infrastructure.Repositories
     public class BicicletaRepository : IBicicletaRepository
     {
         private readonly ITrancaRepository _trancaRepository;
-        private readonly ITotemRepository _totemRepository;
 
-        public BicicletaRepository(ITrancaRepository trancaRepository, ITotemRepository totemRepository)
+        public BicicletaRepository(ITrancaRepository trancaRepository)
         {
             _trancaRepository = trancaRepository;
-            _totemRepository = totemRepository;
         }
 
         // mockar dados
