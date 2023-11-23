@@ -44,7 +44,7 @@ jobs:
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[Application]*%2c[Domain]*%2c[Infrastructure]*"'
+          arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"'
           
       # Preparing SonarCloud analysis
       - task: SonarCloudPrepare@1
@@ -70,7 +70,7 @@ jobs:
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Exclude="[Application]*%2c[Domain]*%2c[Infrastructure]*"'
+          arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"'
 
       # Analyzing with SonarCloud
       - task: SonarCloudAnalyze@1
