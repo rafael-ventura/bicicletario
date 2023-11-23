@@ -46,8 +46,4 @@
         <_ContentIncludedByDefault Remove="Infrastructure\bin\Debug\net7.0\Infrastructure.deps.json"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Compile Remove="WebAPI\Controllers\TrancaController.cs"/>
-    </ItemGroup>
-
 </Project>

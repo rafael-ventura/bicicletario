@@ -1,6 +1,7 @@
 ﻿using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
+using bicicletario.Domain.dtos.responses;
 using bicicletario.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,13 +27,14 @@ public class BicicletaController : ControllerBase
         try
         {
             var bicicletas = await _bicicletaService.ObterTodasBicicletas();
-            return Ok(new { mensagem = "Bicicletas encontradas.", bicicletas });
+            return Ok(new BicicletaResponse { Mensagem = "Bicicletas encontradas.", Bicicletas = bicicletas });
         }
         catch (BicicletaNaoEncontradaException)
         {
-            return NotFound(new { mensagem = "Nenhuma bicicleta encontrada." });
+            return NotFound(new BicicletaResponse { Mensagem = "Nenhuma bicicleta encontrada." });
         }
     }
+
 
     // POST: api/bicicletas
     [HttpPost]

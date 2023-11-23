@@ -40,15 +40,10 @@ namespace bicicletario.Infrastructure.Repositories
         public List<Bicicleta> GetAll()
         {
             var jsonData = File.ReadAllText("mock_bicicletas.json");
-            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData);
-
-            if (bicicletas != null)
-            {
-                return bicicletas;
-            }
-
-            throw new BicicletaNaoEncontradaException();
+            var bicicletas = JsonConvert.DeserializeObject<List<Bicicleta>>(jsonData) ?? new List<Bicicleta>();
+            return bicicletas;
         }
+
 
         public Task<Bicicleta> Create(NovaBicicletaRequest bicicleta)
         {

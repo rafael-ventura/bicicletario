@@ -2,13 +2,14 @@ using bicicletario.Application.Exceptions;
 using bicicletario.Application.Interfaces;
 using bicicletario.Domain.dtos;
 using bicicletario.Domain.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bicicletario.WebAPI.Controllers;
 
 public class TrancaController : ControllerBase
 {
-    private readonly ITrancaService _trancaService;
+     private readonly ITrancaService _trancaService;
 
     public TrancaController(ITrancaService trancaService)
     {

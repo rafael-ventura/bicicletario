@@ -33,9 +33,14 @@ public class BicicletaService : IBicicletaService
     public Task<List<Bicicleta>> ObterTodasBicicletas()
     {
         var bicicletas = _bicicletaRepository.GetAll();
+        if (!bicicletas.Any())
+        {
+            throw new BicicletaNaoEncontradaException();
+        }
 
         return Task.FromResult(bicicletas);
     }
+
 
     public Task<Bicicleta> CriarBicicleta(NovaBicicletaRequest bicicleta)
     {
@@ -46,7 +51,6 @@ public class BicicletaService : IBicicletaService
 
     public Task<Bicicleta> IntegrarNaRede(IntegrarNaRedeRequest request)
     {
-        
         var bicicletaIntegrada = _bicicletaRepository.IntegrarNaRede(request);
 
         return bicicletaIntegrada;

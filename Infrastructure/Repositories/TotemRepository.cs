@@ -17,15 +17,10 @@ public class TotemRepository : ITotemRepository
     public Task<List<Totem>> ObterTodosTotens()
     {
         var jsonData = File.ReadAllText("mock_totens.json");
-        var totens = JsonConvert.DeserializeObject<List<Totem>>(jsonData);
-
-        if (totens != null)
-        {
-            return Task.FromResult(totens);
-        }
-
-        throw new InvalidOperationException();
+        var totens = JsonConvert.DeserializeObject<List<Totem>>(jsonData) ?? new List<Totem>();
+        return Task.FromResult(totens);
     }
+
 
     public Task<Totem> ObterTotemPorId(int idTotem)
     {
